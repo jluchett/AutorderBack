@@ -35,15 +35,6 @@ app.use(passport.session());
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 
-app.post("/login", (req, res, next) => {
-  // Lógica para iniciar sesión
-  // Aquí deberías llamar a passport.authenticate() para manejar la autenticación
-});
-
-app.get("/logout", (req, res) => {
-  // Lógica para cerrar sesión
-});
-
 // Puerto de escucha
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

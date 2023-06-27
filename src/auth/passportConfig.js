@@ -1,6 +1,7 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const db = require("../database/db");
+const bcrypt = require("bcrypt");
 
 passport.use(
   new LocalStrategy(
@@ -45,9 +46,9 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const query = "SELECT * FROM users WHERE id = $1";
-    const values = [id];
-    const user = await db.query(query, values);
+    const query = 'SELECT * FROM users WHERE id = $1';
+    const { rows } = await db.query(query, [id]);
+    const user = rows[0];
     done(null, user);
   } catch (error) {
     done(error);

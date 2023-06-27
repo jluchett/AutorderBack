@@ -20,8 +20,15 @@ const loginUser = (req, res, next) => {
 
 // Controlador para cerrar sesión
 const logoutUser = (req, res) => {
-  req.logout();
-  res.status(200).json({ message: "Cierre de sesión exitoso" });
+  req.logOut((err) => {
+    if (err) {
+      console.log(err);
+      // Manejo de errores en el cierre de sesión
+      return res.status(500).json({ message: 'Error al cerrar la sesión' });
+    }
+    // Cierre de sesión exitoso
+    return res.status(200).json({ message: 'Cierre de sesión exitoso' });
+  });
 };
 
 module.exports = {
