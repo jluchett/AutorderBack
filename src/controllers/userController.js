@@ -31,6 +31,32 @@ const createUser = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params; // Obtener el ID del usuario de los parámetros de la ruta
+    const { password, email } = req.body; // Obtener los datos actualizados del usuario
+
+    // Actualizar los datos del usuario en la base de datos
+    const query = "UPDATE users SET password = $1, email = $2 WHERE id = $3";
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const values = [hashedPassword, email, id];
+
+    const result = await db.query(query, values);
+    if (result.rowCount === 0) {
+      // La consulta no modificó ninguna fila en la base de datos
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+    // Devolver la respuesta con los datos actualizados
+    return res.status(200).json({ message: "Datos de usuario actualizados" });
+  } catch (error) {
+    // Error al actualizar los datos del usuario
+    return res
+      .status(500)
+      .json({ message: "Error al actualizar los datos del usuario", error });
+  }
+};
+
 module.exports = {
   createUser,
+  updateUser,
 };
