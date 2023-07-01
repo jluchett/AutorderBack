@@ -16,17 +16,17 @@ const createUser = async (req, res) => {
     }
 
     // Crear el nuevo usuario en la base de datos
-    const insertQuery = "INSERT INTO users (id, name, password) VALUES ($1, $2, $3)";
+    const insertQuery =
+      "INSERT INTO users (id, name, password) VALUES ($1, $2, $3)";
 
     // Generar un hash de la contraseña antes de almacenarla en la base de datos
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const insertValues = [id, name, hashedPassword];
-    const user = await db.query(insertQuery, insertValues);
+    await db.query(insertQuery, insertValues);
 
     res.status(201).json({
       message: "Usuario creado exitosamente",
-      user,
     });
   } catch (error) {
     console.error("Error al crear el usuario", error);
@@ -50,10 +50,9 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
     // Devolver la respuesta con los datos actualizados
-    return res.status(200).json({ 
+    return res.status(200).json({
       message: "Datos de usuario actualizados",
-      user: result.rows[0]
-     });
+    });
   } catch (error) {
     // Error al actualizar los datos del usuario
     return res
