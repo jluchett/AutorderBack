@@ -13,7 +13,10 @@ const loginUser = (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.status(200).json({ message: "Inicio de sesión exitoso" });
+      return res.status(200).json({
+        message: "Inicio de sesión exitoso",
+        user,
+      });
     });
   })(req, res, next);
 };
@@ -24,10 +27,10 @@ const logoutUser = (req, res) => {
     if (err) {
       console.log(err);
       // Manejo de errores en el cierre de sesión
-      return res.status(500).json({ message: 'Error al cerrar la sesión' });
+      return res.status(500).json({ message: "Error al cerrar la sesión" });
     }
     // Cierre de sesión exitoso
-    return res.status(200).json({ message: 'Cierre de sesión exitoso' });
+    return res.status(200).json({ message: "Cierre de sesión exitoso" });
   });
 };
 

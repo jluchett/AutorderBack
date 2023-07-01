@@ -6,15 +6,15 @@ const bcrypt = require("bcrypt");
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "email",
+      usernameField: "id",
       passwordField: "password",
     },
-    async (email, password, done) => {
+    async (id, password, done) => {
       try {
         // Aquí debes implementar la lógica para verificar las credenciales en la base de datos
         // Ejemplo utilizando una consulta a la base de datos con pg (biblioteca de PostgreSQL)
-        const query = "SELECT * FROM users WHERE email = $1";
-        const values = [email];
+        const query = "SELECT * FROM users WHERE id = $1";
+        const values = [id];
 
         const result = await db.query(query, values);
 
