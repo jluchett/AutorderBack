@@ -1,7 +1,24 @@
 const db = require("../database/db");
 const bcrypt = require("bcrypt");
 
-//Crear usuario
+const getusers = async (req, res) => {
+  try {
+    const query = "SELECT * FROM users";
+    const result = await db.query(query);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ message: "no hay usuarios registrados" });
+    }
+    const users = result.rows;
+    res.status(201).json({
+      users,
+    });
+  } catch (error) {
+    console.error("Error al crear el usuario", error);
+    res.status(500).json({ message: "Error al crear el usuario" });
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     const { id, name, password } = req.body;
@@ -64,4 +81,5 @@ const updateUser = async (req, res) => {
 module.exports = {
   createUser,
   updateUser,
+  getusers,
 };

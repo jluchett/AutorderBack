@@ -37,6 +37,6 @@ app.use("/auth", authRouter);
 
 // Puerto de escucha
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+app.listen(port, '0.0.0.0',() => {
+  console.log(`Servidor corriendo en el puerto ${port}`);
 });
