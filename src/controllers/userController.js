@@ -22,7 +22,6 @@ const getusers = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { id, name, password } = req.body;
-
     // Verificar si el usuario ya existe en la base de datos
     const query = "SELECT * FROM users WHERE id = $1";
     const values = [id];
@@ -31,7 +30,6 @@ const createUser = async (req, res) => {
     if (result.rows.length > 0) {
       return res.status(400).json({ message: "El usuario ya existe" });
     }
-
     // Crear el nuevo usuario en la base de datos
     const insertQuery =
       "INSERT INTO users (id, name, password) VALUES ($1, $2, $3)";
