@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const getusers = async (req, res) => {
   try {
-    const query = "SELECT * FROM users";
+    const query = "SELECT * FROM users order by id";
     const result = await db.query(query);
 
     if (result.rows.length === 0) {
@@ -76,8 +76,53 @@ const updateUser = async (req, res) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = "DELETE FROM users WHERE id = $1";
+    const result = await db.query(query, [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(400).json({ message: "No se ha eliminado usuario" });
+    }
+    return res.status(201).json({
+      message: "Usuario eliminado con exito",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error al eliminar usuario", error });
+  }
+};
+
+const lockUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { locked } = req.body;
+
+    const query = "UPDATE users SET locked = $1 WHERE id = $2";
+    const values = [locked, id];
+    const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res
+        .status(400)
+        .json({ message: "No se ha modificado estado del usuario" });
+    }
+    return res.status(201).json({
+      message: "Estado del usuario actualizado con exito",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error al modificar estado del usuario", error });
+  }
+};
+
 module.exports = {
   createUser,
   updateUser,
   getusers,
+  deleteUser,
+  lockUser,
 };
