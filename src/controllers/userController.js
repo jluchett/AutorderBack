@@ -33,10 +33,8 @@ const createUser = async (req, res) => {
     // Crear el nuevo usuario en la base de datos
     const insertQuery =
       "INSERT INTO users (id, name, password) VALUES ($1, $2, $3)";
-
     // Generar un hash de la contraseña antes de almacenarla en la base de datos
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const insertValues = [id, name, hashedPassword];
     await db.query(insertQuery, insertValues);
 
