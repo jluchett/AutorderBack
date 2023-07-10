@@ -51,13 +51,19 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params; // Obtener el ID del usuario de los parámetros de la ruta
     const { password, name } = req.body; // Obtener los datos actualizados del usuario
-
+    let query2 =""
+    let values2 = []
+    if (password) {
+      query2 = "UPDATE users SET password = $1, name = $2 WHERE id = $3";
+      const hashedPassword = await bcrypt.hash(password, 10);
+      values2 = [hashedPassword, name, id];
+    }else {
+      query2 = "UPDATE users SET name = $1 WHERE id = $2";
+      values2 = [ name, id];
+    }
     // Actualizar los datos del usuario en la base de datos
-    const query = "UPDATE users SET password = $1, name = $2 WHERE id = $3";
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const values = [hashedPassword, name, id];
 
-    const result = await db.query(query, values);
+    const result = await db.query(query2, values2);
     if (result.rowCount === 0) {
       // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({ message: "Usuario no encontrado" });
