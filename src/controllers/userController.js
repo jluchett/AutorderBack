@@ -28,7 +28,10 @@ const createUser = async (req, res) => {
     const result = await db.query(query, values);
 
     if (result.rows.length > 0) {
-      return res.status(400).json({ message: "El usuario ya existe" });
+      return res.status(400).json({
+        message: "El usuario ya existe",
+        succes: false,
+      });
     }
     // Crear el nuevo usuario en la base de datos
     const insertQuery =
@@ -40,10 +43,14 @@ const createUser = async (req, res) => {
 
     res.status(201).json({
       message: "Usuario creado exitosamente",
+      succes: true,
     });
   } catch (error) {
     console.error("Error al crear el usuario", error);
-    res.status(500).json({ message: "Error al crear el usuario" });
+    res.status(500).json({
+      message: "Error al crear el usuario",
+      succes: false,
+    });
   }
 };
 
@@ -51,15 +58,15 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params; // Obtener el ID del usuario de los parámetros de la ruta
     const { password, name } = req.body; // Obtener los datos actualizados del usuario
-    let query2 =""
-    let values2 = []
+    let query2 = "";
+    let values2 = [];
     if (password) {
       query2 = "UPDATE users SET password = $1, name = $2 WHERE id = $3";
       const hashedPassword = await bcrypt.hash(password, 10);
       values2 = [hashedPassword, name, id];
-    }else {
+    } else {
       query2 = "UPDATE users SET name = $1 WHERE id = $2";
-      values2 = [ name, id];
+      values2 = [name, id];
     }
     // Actualizar los datos del usuario en la base de datos
 

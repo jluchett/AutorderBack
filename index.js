@@ -6,6 +6,7 @@ const session = require("express-session");
 const db = require("./src/database/db");
 const userRouter = require("./src/routes/userRoutes");
 const authRouter = require("./src/routes/authRoutes");
+const cliRouter = require('./src/routes/clientRoutes');
 require("dotenv").config();
 require("./src/auth/passportConfig");
 
@@ -34,6 +35,7 @@ app.use(passport.session());
 // Agregar las rutas al middleware principal de tu aplicación
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/clients", cliRouter);
 
 // Puerto de escucha
 const port = process.env.PORT || 3000;
