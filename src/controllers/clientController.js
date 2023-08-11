@@ -21,7 +21,7 @@ const getClients = async (req, res) => {
 const createClient = async (req, res) => {
   try {
     const { id, nombre, telefono, email } = req.body;
-    // Verificar si el usuario ya existe en la base de datos
+    // Verificar si el cliente ya existe en la base de datos
     const query = "SELECT * FROM clientes WHERE id = $1";
     const values = [id];
     const result = await db.query(query, values);

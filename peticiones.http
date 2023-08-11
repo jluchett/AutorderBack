@@ -1,2 +1,16 @@
-GET http://localhost:3001/users/
+### recuperer todos los clientes
+GET http://localhost:3001/clients/
 
+### agregar cliente
+POST http://localhost:3001/clients/add
+content-type: application/json
+
+{
+    "id": "1129574806",
+    "nombre": "Juan Bermudes",
+    "telefono": "301184518",
+    "email": "jlucbbf@ghmfbds.co"
+}
+
+### recuperar todos los usuarios
+GET http://localhost:3001/users/
