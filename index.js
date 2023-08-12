@@ -7,6 +7,7 @@ const db = require("./src/database/db");
 const userRouter = require("./src/routes/userRoutes");
 const authRouter = require("./src/routes/authRoutes");
 const cliRouter = require('./src/routes/clientRoutes');
+const vehicRouter = require('./src/routes/vehicleRoutes')
 require("dotenv").config();
 require("./src/auth/passportConfig");
 
@@ -36,6 +37,7 @@ app.use(passport.session());
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/clients", cliRouter);
+app.use("/vehicles", vehicRouter)
 
 // Puerto de escucha
 const port = process.env.PORT || 3000;
