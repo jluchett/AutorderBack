@@ -14,3 +14,39 @@ content-type: application/json
 
 ### recuperar todos los usuarios
 GET http://localhost:3001/users/
+
+### recuperar vehiculos
+GET http://localhost:3001/vehicles/
+
+### registrar vehculo
+POST   http://localhost:3001/vehicles/add
+content-type: application/json
+
+{
+    "placa": "ZAB40E",
+    "marca": "YAMAHA",
+    "modelo": "V80",
+    "anio": 1998,
+    "kilometraje": 95300,
+    "motor": 80,
+    "transmision": "Manual",
+    "cliente_id": "1129574806"
+}
+
+### Actualizar vehiculo 
+PUT  http://localhost:3001/vehicles/update/QLF77E
+content-type: application/json
+
+{
+    "placa": "QLF77E",
+    "marca": "SIGMA",
+    "modelo": "SG100T",
+    "anio": 2017,
+    "kilometraje": 9000,
+    "motor": 97,
+    "transmision": "Manual",
+    "cliente_id": "1129574805"
+}
+
+### eliminar vehiculo
+DELETE   http://localhost:3001/vehicles/delete/ZAB40E

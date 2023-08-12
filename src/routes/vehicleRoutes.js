@@ -4,7 +4,7 @@ const vehicleController = require("../controllers/vehicleController");
 
 router.get("/", vehicleController.getVehicles);
 router.post("/add", vehicleController.createVehicle)
-router.put("/update/:id", vehicleController.updateVehicle)
-router.delete("/delete/:id", vehicleController.deleteVehicle)
+router.put("/update/:placa", vehicleController.updateVehicle)
+router.delete("/delete/:placa", vehicleController.deleteVehicle)
 
 module.exports = router;

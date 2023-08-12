@@ -75,7 +75,7 @@ const updateVehicle = async (req, res) => {
       req.body;
 
     const query =
-      "UPDATE vehiculos SET marca = $2, modelo = $3, anio = $4, kilometraje = $5, motor = $6, transmision = $7 cliente_id = $8 WHERE placa = $1";
+      "UPDATE vehiculos SET marca = $2, modelo = $3, anio = $4, kilometraje = $5, motor = $6, transmision = $7, cliente_id = $8 WHERE placa = $1";
     const values = [
       placa,
       marca,
