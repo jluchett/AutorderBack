@@ -2,7 +2,7 @@ const db = require("../database/db");
 
 const getVehicles = async (req, res) => {
   try {
-    const query = "SELECT v.placa, v.marca, v.modelo, v.anio, v.kilometraje, v.motor, v.transmision, c.nombre AS nombre_cliente FROM vehiculos v JOIN clientes c ON v.cliente_id = c.id ORDER BY v.placa";
+    const query = "SELECT v.placa, v.marca, v.modelo, v.anio, v.kilometraje, v.motor, v.transmision, v.cliente_id, c.nombre AS nombre_cliente FROM vehiculos v JOIN clientes c ON v.cliente_id = c.id ORDER BY v.placa";
     const result = await db.query(query);
 
     if (result.rows.length === 0) {

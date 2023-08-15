@@ -34,16 +34,16 @@ content-type: application/json
 }
 
 ### Actualizar vehiculo 
-PUT  http://localhost:3001/vehicles/update/QLF77E
+PUT  http://localhost:3001/vehicles/update/GNV321
 content-type: application/json
 
 {
-    "placa": "QLF77E",
-    "marca": "SIGMA",
-    "modelo": "SG100T",
-    "anio": 2017,
-    "kilometraje": 9000,
-    "motor": 97,
+    "placa": "GNV321",
+    "marca": "Chevrolet",
+    "modelo": "corsa",
+    "anio": 2004,
+    "kilometraje": 80000,
+    "motor": 2000,
     "transmision": "Manual",
     "cliente_id": "1129574805"
 }
