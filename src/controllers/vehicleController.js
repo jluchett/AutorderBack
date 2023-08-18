@@ -13,8 +13,8 @@ const getVehicles = async (req, res) => {
       vehicles,
     });
   } catch (error) {
-    console.error("Error al obtener clientes", error);
-    res.status(500).json({ message: "Error al obtener clientes" });
+    console.error("Error al obtener Vehiculos", error);
+    res.status(500).json({ message: "Error al obtener Vehiculos" });
   }
 };
 

@@ -6,10 +6,10 @@ POST http://localhost:3001/clients/add
 content-type: application/json
 
 {
-    "id": "1129574806",
-    "nombre": "Juan Bermudes",
-    "telefono": "301184518",
-    "email": "jlucbbf@ghmfbds.co"
+    "id": "1129574805",
+    "nombre": "Jorge Luchetta",
+    "telefono": "3012723018",
+    "email": "jluchett@gmail.com"
 }
 
 ### recuperar todos los usuarios
@@ -23,14 +23,14 @@ POST   http://localhost:3001/vehicles/add
 content-type: application/json
 
 {
-    "placa": "ZAB40E",
-    "marca": "YAMAHA",
-    "modelo": "V80",
-    "anio": 1998,
-    "kilometraje": 95300,
-    "motor": 80,
+    "placa": "GNV321",
+    "marca": "Chevrolet",
+    "modelo": "corsa",
+    "anio": 2004,
+    "kilometraje": 80000,
+    "motor": 2000,
     "transmision": "Manual",
-    "cliente_id": "1129574806"
+    "cliente_id": "1129574805"
 }
 
 ### Actualizar vehiculo 
