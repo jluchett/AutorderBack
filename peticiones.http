@@ -50,3 +50,15 @@ content-type: application/json
 
 ### eliminar vehiculo
 DELETE   http://localhost:3001/vehicles/delete/ZAB40E
+
+### obtener productos
+GET http://localhost:3001/products/
+
+### Agregar producto a la base de  datos
+POST http://localhost:3001/products/add
+content-type: application/json
+
+{
+    "nombre": "Cambio de aceite",
+    "precio": 100000
+}

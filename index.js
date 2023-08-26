@@ -8,6 +8,7 @@ const userRouter = require("./src/routes/userRoutes");
 const authRouter = require("./src/routes/authRoutes");
 const cliRouter = require('./src/routes/clientRoutes');
 const vehicRouter = require('./src/routes/vehicleRoutes')
+const prodsRouter = require("./src/routes/productRoutes")
 require("dotenv").config();
 require("./src/auth/passportConfig");
 
@@ -38,6 +39,7 @@ app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/clients", cliRouter);
 app.use("/vehicles", vehicRouter)
+app.use("/products",prodsRouter)
 
 // Puerto de escucha
 const port = process.env.PORT || 3000;
