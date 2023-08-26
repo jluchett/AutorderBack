@@ -59,6 +59,18 @@ POST http://localhost:3001/products/add
 content-type: application/json
 
 {
-    "nombre": "Cambio de aceite",
-    "precio": 100000
+    "nombre": "Sincronizacion",
+    "precio": 70000
 }
+
+### actualizar producto
+PUT  http://localhost:3001/products/update/1
+content-type: application/json
+
+{
+    "nombre": "Sin",
+    "precio": 98000
+}
+
+### eliminar producto
+DELETE   http://localhost:3001/products/delete/3
