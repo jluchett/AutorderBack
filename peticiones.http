@@ -6,10 +6,20 @@ POST http://localhost:3001/clients/add
 content-type: application/json
 
 {
-    "id": "1129574805",
-    "nombre": "Jorge Luchetta",
-    "telefono": "3012723018",
-    "email": "jluchett@gmail.com"
+    "id": "84025820",
+    "nombre": "ARIEL DE LUQUE RODRIGUEZ",
+    "telefono": "3174360315",
+    "email": ""
+}
+
+### actualizar cliente
+PUT  http://localhost:3001/clients/update/84025820
+content-type: application/json
+
+{
+    "nombre": "ARIEL DE LUQUE RODRIGUEZ",
+    "telefono": "3174360315",
+    "email": "No registra"
 }
 
 ### recuperar todos los usuarios
@@ -23,14 +33,14 @@ POST   http://localhost:3001/vehicles/add
 content-type: application/json
 
 {
-    "placa": "GNV321",
-    "marca": "Chevrolet",
-    "modelo": "corsa",
-    "anio": 2004,
-    "kilometraje": 80000,
-    "motor": 2000,
+    "placa": "CRL690",
+    "marca": "FORD",
+    "modelo": "SPORTAGE",
+    "anio": 2010,
+    "kilometraje": 177252,
+    "motor": 2400,
     "transmision": "Manual",
-    "cliente_id": "1129574805"
+    "cliente_id": "84025820"
 }
 
 ### Actualizar vehiculo 
@@ -59,8 +69,8 @@ POST http://localhost:3001/products/add
 content-type: application/json
 
 {
-    "nombre": "Sincronizacion",
-    "precio": 70000
+    "nombre": "Motor Elf 5W20 1/4",
+    "precio": 64000
 }
 
 ### actualizar producto
@@ -74,3 +84,30 @@ content-type: application/json
 
 ### eliminar producto
 DELETE   http://localhost:3001/products/delete/3
+
+
+### recuperer todas las ordenes
+GET http://localhost:3001/orders
+
+### Agregar Orden a la base de  datos
+POST http://localhost:3001/orders/add
+content-type: application/json
+
+{
+  "fecha_orden": "2023-08-29",
+  "id_cliente": "1129574805",
+  "placa_vehic": "GNV321",
+  "total_orden": 153000,
+  "detalle": [
+    {
+      "producto_id": 1,
+      "cantidad": 1,
+      "precio_unitario": 98000
+    },
+    {
+      "producto_id": 2,
+      "cantidad": 1,
+      "precio_unitario": 55000
+    }
+  ]
+}
