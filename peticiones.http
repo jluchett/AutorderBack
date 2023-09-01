@@ -94,20 +94,20 @@ POST http://localhost:3001/orders/add
 content-type: application/json
 
 {
-  "fecha_orden": "2023-08-29",
+  "fecha_orden": "now",
   "id_cliente": "1129574805",
   "placa_vehic": "GNV321",
-  "total_orden": 153000,
+  "total_orden": 50000,
   "detalle": [
     {
-      "producto_id": 1,
+      "producto_id": 10,
       "cantidad": 1,
-      "precio_unitario": 98000
+      "precio_unitario": 20000
     },
     {
-      "producto_id": 2,
+      "producto_id": 25,
       "cantidad": 1,
-      "precio_unitario": 55000
+      "precio_unitario": 30000
     }
   ]
 }
