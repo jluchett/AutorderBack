@@ -57,7 +57,29 @@ const createOrder = async (req, res) => {
 };
   
 const updateOrder = () => {};
-const deleteOrder = () => {};
+const deleteOrder = async(req, res) => {
+  try {
+    const { id } = req.params;
+    const query = "Delete FROM orders WHERE id = $1";
+    const result = await db.query(query, [id]);
+    if (result.rowCount === 0) {
+      return res.status(400).json({
+        message: "No se ha eliminado la orden",
+        succes: false,
+      });
+    }
+    return res.status(201).json({
+      message: "Orden eliminado con exito",
+      succes: true,
+    });
+  } catch (error) {
+    console.error("Error al eliminar orden", error);
+    res.status(500).json({
+      message: "Eror al eliminar orden",
+      succes: false,
+    });
+  }
+};
 
 module.exports = {
   getOrders,
