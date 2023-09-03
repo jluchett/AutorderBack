@@ -56,7 +56,38 @@ const createOrder = async (req, res) => {
     } 
 };
   
-const updateOrder = () => {};
+const updateOrder = async(req, res) => {
+  try {
+    const { id } = req.params;
+    const { nombre, telefono, email } = req.body;
+
+    const query =
+      "UPDATE clientes SET nombre = $2, telefono = $3, email = $4 WHERE id = $1";
+    const values = [id, nombre, telefono, email];
+
+    const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+      // La consulta no modificó ninguna fila en la base de datos
+      return res.status(404).json({
+        message: "Cliente no encontrado",
+        succes: false,
+      });
+    }
+    // Devolver la respuesta con los datos actualizados
+    return res.status(200).json({
+      message: "Datos del cliente actualizados",
+      succes: true,
+    });
+  } catch (error) {
+    console.error("Eror al actualizar info del cliente", error);
+    res.status(500).json({
+      message: "Eror al actualizar info del cliente",
+      succes: false,
+    });
+  }
+};
+
 const deleteOrder = async(req, res) => {
   try {
     const { id } = req.params;
