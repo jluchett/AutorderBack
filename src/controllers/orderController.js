@@ -59,31 +59,31 @@ const createOrder = async (req, res) => {
 const updateOrder = async(req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, telefono, email } = req.body;
+    const { fecha_orden, id_cliente, placa_vehic, total_orden} = req.body;
 
     const query =
-      "UPDATE clientes SET nombre = $2, telefono = $3, email = $4 WHERE id = $1";
-    const values = [id, nombre, telefono, email];
+      "UPDATE ordenes SET fecha = $2, cliente_id = $3, vehiculo_placa = $4, total = 5 WHERE id = $1";
+    const values = [id, fecha_orden, id_cliente, placa_vehic, total_orden];
 
     const result = await db.query(query, values);
 
     if (result.rowCount === 0) {
       // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({
-        message: "Cliente no encontrado",
+        message: "Orden no encontrada",
         succes: false,
       });
     }
     // Devolver la respuesta con los datos actualizados
     return res.status(200).json({
-      message: "Datos del cliente actualizados",
+      message: "Datos de la orden actualizados",
       succes: true,
     });
   } catch (error) {
-    console.error("Eror al actualizar info del cliente", error);
+    console.error("Eror al actualizar info de la orden", error);
     res.status(500).json({
-      message: "Eror al actualizar info del cliente",
-      succes: false,
+      message: "Eror al actualizar info de la orden ",
+      succes: false
     });
   }
 };
@@ -100,7 +100,7 @@ const deleteOrder = async(req, res) => {
       });
     }
     return res.status(201).json({
-      message: "Orden eliminado con exito",
+      message: "Orden eliminada con exito",
       succes: true,
     });
   } catch (error) {
