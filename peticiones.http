@@ -95,19 +95,27 @@ content-type: application/json
 
 {
   "fecha_orden": "now",
-  "id_cliente": "1129574805",
-  "placa_vehic": "GNV321",
-  "total_orden": 50000,
+  "id_cliente": "84025820",
+  "placa_vehic": "CRL690",
+  "total_orden": 139000,
   "detalle": [
     {
-      "producto_id": 10,
+      "producto_id": 2,
+      "cantidad": 1,
+      "precio_unitario": 55000
+    },
+    {
+      "producto_id": 15,
       "cantidad": 1,
       "precio_unitario": 20000
     },
     {
-      "producto_id": 25,
+      "producto_id": 23,
       "cantidad": 1,
-      "precio_unitario": 30000
+      "precio_unitario": 64000
     }
   ]
 }
+
+### eliminar prodOrdenucto
+DELETE   http://localhost:3001/orders/delete/3

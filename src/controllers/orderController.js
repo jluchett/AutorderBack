@@ -55,66 +55,46 @@ const createOrder = async (req, res) => {
       res.status(500).json({ message: 'Error al crear orden' });
     } 
 };
+
+const deleteOrder = async (req, res) => {
+    try {
+    const { id } = req.params;
+
+    await db.query('BEGIN'); // Iniciar una transacción
+
+    // 1. Realizar una copia de seguridad en otras tablas (por ejemplo, backup_ordenes y backup_detalle_ordenes)
+    const backupQueryor = 'INSERT INTO ordenes_del (SELECT * FROM ordenes WHERE id = $1)';
+    await db.query(backupQueryor, [id]);
   
-const updateOrder = async(req, res) => {
-  try {
-    const { id } = req.params;
-    const { fecha_orden, id_cliente, placa_vehic, total_orden} = req.body;
+    const backupQuerydor = 'INSERT INTO detalle_ordenes_del (SELECT * FROM detalle_ordenes WHERE orden_id = $1)';
+    await db.query(backupQuerydor, [id]);
 
-    const query =
-      "UPDATE ordenes SET fecha = $2, cliente_id = $3, vehiculo_placa = $4, total = 5 WHERE id = $1";
-    const values = [id, fecha_orden, id_cliente, placa_vehic, total_orden];
+    // 2. Eliminar las órdenes y su detalle de la tabla principal
+    const deldetordquery = 'DELETE FROM detalle_ordenes WHERE orden_id = $1';
+    await db.query(deldetordquery, [id]);
 
-    const result = await db.query(query, values);
+    const deleteOrderQuery = 'DELETE FROM ordenes WHERE id = $1';
+    await db.query(deleteOrderQuery, [id]);
 
-    if (result.rowCount === 0) {
-      // La consulta no modificó ninguna fila en la base de datos
-      return res.status(404).json({
-        message: "Orden no encontrada",
-        succes: false,
-      });
-    }
-    // Devolver la respuesta con los datos actualizados
-    return res.status(200).json({
-      message: "Datos de la orden actualizados",
-      succes: true,
-    });
-  } catch (error) {
-    console.error("Eror al actualizar info de la orden", error);
-    res.status(500).json({
-      message: "Eror al actualizar info de la orden ",
-      succes: false
-    });
-  }
-};
+    await db.query('COMMIT'); // Confirmar la transacción
 
-const deleteOrder = async(req, res) => {
-  try {
-    const { id } = req.params;
-    const query = "Delete FROM orders WHERE id = $1";
-    const result = await db.query(query, [id]);
-    if (result.rowCount === 0) {
-      return res.status(400).json({
-        message: "No se ha eliminado la orden",
-        succes: false,
-      });
-    }
     return res.status(201).json({
-      message: "Orden eliminada con exito",
-      succes: true,
+      message: 'Orden eliminada con éxito',
+      success: true,
     });
   } catch (error) {
-    console.error("Error al eliminar orden", error);
+    await db.query('ROLLBACK'); // Revertir la transacción en caso de error
+    console.error('Error al eliminar orden', error);
     res.status(500).json({
-      message: "Eror al eliminar orden",
-      succes: false,
+      message: 'Error al eliminar orden',
+      success: false,
     });
-  }
+  } 
 };
+
 
 module.exports = {
   getOrders,
   createOrder,
-  updateOrder,
   deleteOrder,
 };
