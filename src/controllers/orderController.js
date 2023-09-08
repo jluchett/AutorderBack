@@ -92,9 +92,34 @@ const deleteOrder = async (req, res) => {
   } 
 };
 
+const getDetail = async(req, res) => {
+  try {
+    const { id } = req.params
+    const query =
+      "SELECT dto.producto_id AS Codigo, p.nombre As Descripcion, dto.cantidad AS Cant, dto.precio_unitario AS Precio_Und, dto.cantidad * dto.precio_unitario AS Valor_Total FROM detalle_ordenes dto JOIN prodserv p ON p.id = dto.producto_id WHERE dto.orden_id = $1";
+    const result = await db.query(query,[id]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ message: "no hay detalle para consulta" });
+    }
+    const detalle = result.rows;
+    res.status(201).json({
+      detalle,
+    });
+    
+  } catch (error) {
+    console.error("Error al obtener detalle", error)
+    res.status(500).json({
+      message: 'Error al obtener detalle de la orden',
+      success: false,
+    })
+  }
+}
+
 
 module.exports = {
   getOrders,
   createOrder,
   deleteOrder,
+  getDetail,
 };

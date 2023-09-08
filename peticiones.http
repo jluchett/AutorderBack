@@ -119,3 +119,6 @@ content-type: application/json
 
 ### eliminar prodOrdenucto
 DELETE   http://localhost:3001/orders/delete/3
+
+### Obtener detalle ordenes
+GET    http://localhost:3001/orders/detail/2
