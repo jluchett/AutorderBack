@@ -134,9 +134,29 @@ const deleteVehicle = async (req, res) => {
   }
 };
 
+const getVehiclesClient = async (req, res)=> {
+  try {
+    const { idClient } = req.params
+    const query = "SELECT placa, marca, modelo, anio, kilometraje FROM vehiculos WHERE cliente_id = $1";
+    const result = await db.query(query, [idClient]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ message: "no hay vehiculos registrados al cliente" });
+    }
+    const vehiclesClient = result.rows;
+    res.status(201).json({
+      vehiclesClient,
+    });
+  } catch (error) {
+    console.error("Error al obtener Vehiculos del cliente", error);
+    res.status(500).json({ message: "Error al obtener Vehiculos del cliente" });
+  }
+}
+
 module.exports = {
   getVehicles,
   createVehicle,
   updateVehicle,
   deleteVehicle,
+  getVehiclesClient,
 };
