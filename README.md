@@ -39,7 +39,7 @@ SECRET="clave secreta para encriptar la contraseña del usuario"
 Para iniciar el servidor de desarrollo, ejecuta:
 
 ```bash
-npm run dev
+npm start
 ```
 
 Esto iniciará el servidor en modo de desarrollo, escuchando en `localhost` en el puerto definido en tu archivo de configuración.
