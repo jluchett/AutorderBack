@@ -92,7 +92,7 @@ const updateVehicle = async (req, res) => {
     if (result.rowCount === 0) {
       // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({
-        message: "Vehiculo no encontrado",
+        message: "Vehiculo no encontrado en la bd",
         succes: false,
       });
     }
