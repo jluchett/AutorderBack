@@ -6,10 +6,20 @@ POST http://localhost:3001/clients/add
 content-type: application/json
 
 {
-    "id": "1129574806",
-    "nombre": "Juan Bermudes",
-    "telefono": "301184518",
-    "email": "jlucbbf@ghmfbds.co"
+    "id": "84025820",
+    "nombre": "ARIEL DE LUQUE RODRIGUEZ",
+    "telefono": "3174360315",
+    "email": ""
+}
+
+### actualizar cliente
+PUT  http://localhost:3001/clients/update/84025820
+content-type: application/json
+
+{
+    "nombre": "ARIEL DE LUQUE RODRIGUEZ",
+    "telefono": "3174360315",
+    "email": "No registra"
 }
 
 ### recuperar todos los usuarios
@@ -23,14 +33,14 @@ POST   http://localhost:3001/vehicles/add
 content-type: application/json
 
 {
-    "placa": "ZAB40E",
-    "marca": "YAMAHA",
-    "modelo": "V80",
-    "anio": 1998,
-    "kilometraje": 95300,
-    "motor": 80,
+    "placa": "CRL690",
+    "marca": "FORD",
+    "modelo": "SPORTAGE",
+    "anio": 2010,
+    "kilometraje": 177252,
+    "motor": 2400,
     "transmision": "Manual",
-    "cliente_id": "1129574806"
+    "cliente_id": "84025820"
 }
 
 ### Actualizar vehiculo 
@@ -50,3 +60,65 @@ content-type: application/json
 
 ### eliminar vehiculo
 DELETE   http://localhost:3001/vehicles/delete/ZAB40E
+
+### obtener productos
+GET http://localhost:3001/products/
+
+### Agregar producto a la base de  datos
+POST http://localhost:3001/products/add
+content-type: application/json
+
+{
+    "nombre": "Motor Elf 5W20 1/4",
+    "precio": 64000
+}
+
+### actualizar producto
+PUT  http://localhost:3001/products/update/1
+content-type: application/json
+
+{
+    "nombre": "Sin",
+    "precio": 98000
+}
+
+### eliminar producto
+DELETE   http://localhost:3001/products/delete/3
+
+
+### recuperer todas las ordenes
+GET http://localhost:3001/orders
+
+### Agregar Orden a la base de  datos
+POST http://localhost:3001/orders/add
+content-type: application/json
+
+{
+  "fecha_orden": "now",
+  "id_cliente": "84025820",
+  "placa_vehic": "CRL690",
+  "total_orden": 139000,
+  "detalle": [
+    {
+      "producto_id": 2,
+      "cantidad": 1,
+      "precio_unitario": 55000
+    },
+    {
+      "producto_id": 15,
+      "cantidad": 1,
+      "precio_unitario": 20000
+    },
+    {
+      "producto_id": 23,
+      "cantidad": 1,
+      "precio_unitario": 64000
+    }
+  ]
+}
+
+### eliminar prodOrdenucto
+DELETE   http://localhost:3001/orders/delete/3
+
+### Obtener detalle ordenes
+GET    http://localhost:3001/orders/detail/2
