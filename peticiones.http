@@ -25,6 +25,17 @@ content-type: application/json
 ### recuperar todos los usuarios
 GET http://localhost:3001/users/
 
+
+### Crear usuario
+POST  http://localhost:3001/users/signup
+content-type: application/json
+
+{
+    "id": "123456",
+    "name": "Santiago L",
+    "password": "Hola12345"
+}
+
 ### recuperar vehiculos
 GET http://localhost:3001/vehicles/
 

@@ -1,3 +1,4 @@
+//productController.js
 const db = require("../database/db");
 
 const getProducts = async (req, res) => {

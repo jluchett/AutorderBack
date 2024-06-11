@@ -1,3 +1,4 @@
+//clientController.js
 const db = require("../database/db");
 
 const getClients = async (req, res) => {

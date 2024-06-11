@@ -1,3 +1,4 @@
+//authController.js
 const passport = require("passport");
 
 // Controlador para iniciar sesión

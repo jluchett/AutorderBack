@@ -1,3 +1,4 @@
+//passportConfig.js
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const db = require("../database/db");
@@ -11,7 +12,6 @@ passport.use(
     },
     async (id, password, done) => {
       try {
-        // Aquí debes implementar la lógica para verificar las credenciales en la base de datos
         // Ejemplo utilizando una consulta a la base de datos con pg (biblioteca de PostgreSQL)
         const query = "SELECT * FROM users WHERE id = $1";
         const values = [id];
