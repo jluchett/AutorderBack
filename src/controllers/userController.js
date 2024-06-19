@@ -2,55 +2,51 @@
 const db = require("../database/db");
 const bcrypt = require("bcrypt");
 
-const getusers = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
-    const query = "SELECT * FROM users order by id";
+    const query = "SELECT id, name, role, locked FROM users ORDER BY id";
     const result = await db.query(query);
 
     if (result.rows.length === 0) {
-      return res.status(400).json({ message: "no hay usuarios registrados" });
+      return res.status(404).json({ message: "No hay usuarios registrados" });
     }
-    const users = result.rows;
-    res.status(201).json({
-      users,
+
+    res.status(200).json({
+      users: result.rows,
     });
   } catch (error) {
-    console.error("Error al crear el usuario", error);
-    res.status(500).json({ message: "Error al crear el usuario" });
+    console.error("Error al obtener los usuarios", error);
+    res.status(500).json({ message: "Error al obtener los usuarios" });
   }
 };
 
 const createUser = async (req, res) => {
   try {
-    const { id, name, password } = req.body;
-    // Verificar si el usuario ya existe en la base de datos
-    const query = "SELECT * FROM users WHERE id = $1";
+    const { id, name, password, role = "user", locked = false } = req.body;
+    // Verificar si el usuario ya existe
+    const query = "SELECT id FROM users WHERE id = $1";
     const values = [id];
     const result = await db.query(query, values);
 
     if (result.rows.length > 0) {
-      return res.status(400).json({
+      return res.status(409).json({
         message: "El usuario ya existe",
-        succes: false,
       });
     }
-    // Crear el nuevo usuario en la base de datos
-    const insertQuery =
-      "INSERT INTO users (id, name, password) VALUES ($1, $2, $3)";
-    // Generar un hash de la contraseña antes de almacenarla en la base de datos
+
+    // Generar hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
-    const insertValues = [id, name, hashedPassword];
+    const insertQuery = "INSERT INTO users (id, name, password, role, locked) VALUES ($1, $2, $3, $4, $5)";
+    const insertValues = [id, name, hashedPassword, role, locked];
     await db.query(insertQuery, insertValues);
 
     res.status(201).json({
       message: "Usuario creado exitosamente",
-      succes: true,
     });
   } catch (error) {
     console.error("Error al crear el usuario", error);
     res.status(500).json({
       message: "Error al crear el usuario",
-      succes: false,
     });
   }
 };
@@ -134,7 +130,7 @@ const lockUser = async (req, res) => {
 module.exports = {
   createUser,
   updateUser,
-  getusers,
+  getUsers,
   deleteUser,
   lockUser,
 };

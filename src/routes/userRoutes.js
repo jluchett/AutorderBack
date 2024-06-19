@@ -6,7 +6,7 @@ const userController = require("../controllers/userController");
 // Rutas para la creación de usuarios
 router.post("/signup", userController.createUser);
 router.put("/update/:id", userController.updateUser);
-router.get("/", userController.getusers);
+router.get("/", userController.getUsers);
 router.delete("/delete/:id", userController.deleteUser);
 router.patch("/lock/:id", userController.lockUser);
 
