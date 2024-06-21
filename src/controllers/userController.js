@@ -107,24 +107,27 @@ const lockUser = async (req, res) => {
     const { id } = req.params;
     const { locked } = req.body;
 
+    if (typeof locked !== 'boolean') {
+      return res.status(400).json({ message: "El valor de 'locked' debe ser booleano" });
+    }
+
     const query = "UPDATE users SET locked = $1 WHERE id = $2";
     const values = [locked, id];
     const result = await db.query(query, values);
 
     if (result.rowCount === 0) {
-      return res
-        .status(400)
-        .json({ message: "No se ha modificado estado del usuario" });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    return res.status(201).json({
-      message: "Estado del usuario actualizado con exito",
+
+    res.status(200).json({
+      message: "Estado del usuario actualizado con éxito",
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error al modificar estado del usuario", error });
+    console.error("Error al modificar estado del usuario", error);
+    res.status(500).json({ message: "Error al modificar estado del usuario" });
   }
 };
+
 
 module.exports = {
   createUser,
