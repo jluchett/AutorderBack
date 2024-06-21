@@ -24,6 +24,12 @@ passport.use(
         }
 
         const user = result.rows[0];
+
+        if (user.locked) {
+          // El usuario está bloqueado
+          return done(null, false, { message: "Usuario bloqueado" });
+        }
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
           // Contraseña incorrecta

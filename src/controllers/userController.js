@@ -53,34 +53,33 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { id } = req.params; // Obtener el ID del usuario de los parámetros de la ruta
-    const { password, name } = req.body; // Obtener los datos actualizados del usuario
-    let query2 = "";
-    let values2 = [];
-    if (password) {
-      query2 = "UPDATE users SET password = $1, name = $2 WHERE id = $3";
-      const hashedPassword = await bcrypt.hash(password, 10);
-      values2 = [hashedPassword, name, id];
-    } else {
-      query2 = "UPDATE users SET name = $1 WHERE id = $2";
-      values2 = [name, id];
-    }
-    // Actualizar los datos del usuario en la base de datos
+    const { id } = req.params; // ID del usuario de los parámetros de la ruta
+    const { password, name, role } = req.body; // Datos actualizados
 
-    const result = await db.query(query2, values2);
+    let query;
+    let values;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      query = "UPDATE users SET password = $1, name = $2, role = $3 WHERE id = $4";
+      values = [hashedPassword, name, role, id];
+    } else {
+      query = "UPDATE users SET name = $1, role = $2 WHERE id = $3";
+      values = [name, role, id];
+    }
+
+    const result = await db.query(query, values);
+
     if (result.rowCount === 0) {
-      // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    // Devolver la respuesta con los datos actualizados
-    return res.status(200).json({
+
+    res.status(200).json({
       message: "Datos de usuario actualizados",
     });
   } catch (error) {
-    // Error al actualizar los datos del usuario
-    return res
-      .status(500)
-      .json({ message: "Error al actualizar los datos del usuario", error });
+    console.error("Error al actualizar los datos del usuario", error);
+    res.status(500).json({ message: "Error al actualizar los datos del usuario" });
   }
 };
 
@@ -91,15 +90,15 @@ const deleteUser = async (req, res) => {
     const result = await db.query(query, [id]);
 
     if (result.rowCount === 0) {
-      return res.status(400).json({ message: "No se ha eliminado usuario" });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    return res.status(201).json({
-      message: "Usuario eliminado con exito",
+
+    res.status(200).json({
+      message: "Usuario eliminado con éxito",
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error al eliminar usuario", error });
+    console.error("Error al eliminar usuario", error);
+    res.status(500).json({ message: "Error al eliminar usuario" });
   }
 };
 
