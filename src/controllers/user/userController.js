@@ -1,5 +1,4 @@
-//userController.js
-const db = require("../database/db");
+const db = require("../../database/db");
 const bcrypt = require("bcrypt");
 
 const getUsers = async (req, res) => {
