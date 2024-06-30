@@ -27,13 +27,13 @@ GET http://localhost:3001/users/
 
 
 ### Crear usuario
-POST  http://localhost:3001/users/signup
+POST  http://localhost:3001/users/create
 content-type: application/json
 
 {
-    "id": "123456",
-    "name": "Santiago L",
-    "password": "Hola12345"
+    "id": "1129574805",
+    "name": "Jorge Luchetta",
+    "password": "Hola1234"
 }
 
 ### recuperar vehiculos
