@@ -23,7 +23,7 @@ content-type: application/json
 }
 
 ### recuperar todos los usuarios
-GET http://localhost:3001/users/
+GET http://localhost:3001/users/getUser/112957480
 
 
 ### Crear usuario
