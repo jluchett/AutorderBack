@@ -25,22 +25,33 @@ content-type: application/json
 ### recuperar todos los usuarios
 GET http://localhost:3001/users/
 
+### recuperar un usuario especifico por id
+GET http://localhost:3001/users/1129574805
+
 
 ### Crear usuario
 POST  http://localhost:3001/users/create
 content-type: application/json
 
 {
-    "id": "1129574805",
-    "name": "Jorge Luchetta",
-    "password": "Hola1234"
+    "id": "39089832",
+    "name": "Libia Annichiarico",
+    "password": "Ciao1234"
+}
+
+### Bloquear usuario por su id
+PUT   http://localhost:3001/users/locked/39089832
+content-type: application/json
+
+{
+    "locked": true
 }
 
 ### recuperar vehiculos
-GET http://localhost:3001/vehicles/
+GET   http://localhost:3001/vehicles/
 
 ### registrar vehculo
-POST   http://localhost:3001/vehicles/add
+POST  http://localhost:3001/vehicles/add
 content-type: application/json
 
 {

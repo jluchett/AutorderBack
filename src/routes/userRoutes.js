@@ -5,8 +5,8 @@ const controllerUser = require('../controllers/users/userController.js')
 
 // Rutas para la creación de usuarios
 router.post('/create', controllerUser.createUser)
-router.get('/getUser/:id', controllerUser.getUser)
+router.get('/:id', controllerUser.getUser)
 router.get('/', controllerUser.getUsers)
-router.put('/loked/:id', controllerUser.lockUser)
+router.put('/locked/:id', controllerUser.lockUser)
 
 module.exports = router
