@@ -47,6 +47,15 @@ content-type: application/json
     "locked": true
 }
 
+### actualizar usuario por su id
+POST  http://localhost:3001/users/update/39089832
+content-type: application/json
+
+{
+    "name": "Libia Maria Annichiarico",
+    "role": "vendedor"
+}
+
 ### recuperar vehiculos
 GET   http://localhost:3001/vehicles/
 
