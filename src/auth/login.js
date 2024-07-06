@@ -26,6 +26,7 @@ const login = async (req, res) => {
         .status(200).json({
           mensaje: 'Inicio de sesion exitoso',
           user: user.rows[0].name,
+          token,
           success: true
         })
     }
