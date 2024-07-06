@@ -10,7 +10,7 @@ const updateUser = async (req, res) => {
     const user = await db.query('SELECT name FROM users WHERE id = $1', [id])
     if (user.rows.length === 0) throw new Error('No hay usuario con ese id')
     const result = await db.query('UPDATE users SET name = $1, role = $2 WHERE id = $3', [name, role, id])
-    if (result.rowCount === 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({
         mensaje: 'Datos del usuario actualizados',
         success: true
