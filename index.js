@@ -2,7 +2,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const session = require('express-session')
+const cookieParser = require('cookie-parser')
 const db = require('./src/database/db')
 require('dotenv').config()
 
@@ -15,13 +15,7 @@ db.connect()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false
-  })
-)
+app.use(cookieParser())
 
 // Agregar las rutas al middleware principal de tu aplicación
 const userRouter = require('./src/routes/userRoutes')

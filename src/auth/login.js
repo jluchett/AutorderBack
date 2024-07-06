@@ -1,5 +1,6 @@
 const db = require('../database/db')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const login = async (req, res) => {
   const { id, password } = req.body
@@ -14,11 +15,19 @@ const login = async (req, res) => {
       throw new Error('La contraseña no es valida')
     } else {
       if (user.rows[0].locked === true) throw new Error('Usuario bloqueado, solicitar desbloqueo')
-      res.status(200).json({
-        mensaje: 'Inicio de sesion exitoso',
-        user: user.rows[0].name,
-        success: true
-      })
+      const token = jwt.sign({ id: user.rows[0].id, name: user.rows[0].name }, process.env.SECRET, { expiresIn: '1h' })
+      res
+        .cookie('access_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          maxAge: 1000 * 60 * 60
+        })
+        .status(200).json({
+          mensaje: 'Inicio de sesion exitoso',
+          user: user.rows[0].name,
+          success: true
+        })
     }
   } catch (error) {
     res.status(500).json({
