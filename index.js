@@ -25,8 +25,10 @@ app.use(
 
 // Agregar las rutas al middleware principal de tu aplicación
 const userRouter = require('./src/routes/userRoutes')
+const authRouter = require('./src/routes/authRoutes')
 
 app.use('/users', userRouter)
+app.use('/auth', authRouter)
 
 // Puerto de escucha
 const port = process.env.PORT || 3000
