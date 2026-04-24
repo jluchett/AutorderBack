@@ -1,167 +1,335 @@
-### Iniciar sesión (LOGIN)
+### ========================================
+### AUTORDER BACKEND - PLAN DE PRUEBAS COMPLETO
+### ========================================
+### Este archivo contiene un flujo de pruebas secuencial para validar todas las funcionalidades
+
+### ========================================
+### FASE 1: AUTENTICACIÓN
+### ========================================
+
+### 1.1 Crear un usuario de prueba (si no existe)
+POST http://localhost:3000/api/users/create
+content-type: application/json
+
+{
+    "id": "1234567890",
+    "name": "Usuario Prueba",
+    "password": "Password123"
+}
+
+###
+### 1.2 Iniciar sesión (LOGIN) - REQUERIDO PARA LAS DEMÁS PRUEBAS
 POST http://localhost:3000/api/auth/login
 content-type: application/json
 
 {
-    "id": "39089832",
-    "password": "Ciao1234"
+    "id": "1234567890",
+    "password": "Password123"
 }
 
-### recuperer todos los clientes
+### GUARDAR EL TOKEN DE RESPUESTA EN LA COOKIE PARA LAS SIGUIENTES PRUEBAS
+
+### ========================================
+### FASE 2: GESTIÓN DE CLIENTES
+### ========================================
+
+### 2.1 Obtener todos los clientes
 GET http://localhost:3000/api/clients/
 
-### agregar cliente
+###
+### 2.2 Crear cliente 1
 POST http://localhost:3000/api/clients/add
 content-type: application/json
 
 {
-    "id": "84025820",
-    "nombre": "ARIEL DE LUQUE RODRIGUEZ",
-    "telefono": "3174360315",
-    "email": ""
+    "id": "98765432",
+    "nombre": "Carlos Mendez",
+    "telefono": "3001234567",
+    "email": "carlos@email.com"
 }
 
-### actualizar cliente
-PUT  http://localhost:3000/api/clients/update/84025820
+###
+### 2.3 Crear cliente 2
+POST http://localhost:3000/api/clients/add
 content-type: application/json
 
 {
-    "nombre": "ARIEL DE LUQUE RODRIGUEZ",
-    "telefono": "3174360315",
-    "email": "No registra"
+    "id": "87654321",
+    "nombre": "Maria Garcia",
+    "telefono": "3015555555",
+    "email": "maria@email.com"
 }
 
-### recuperar todos los usuarios
-GET http://localhost:3000/api/users/
-
-### recuperar un usuario especifico por id
-GET http://localhost:3000/api/users/1129574805
-
-
-### Crear usuario
-POST  http://localhost:3000/api/users/create
+###
+### 2.4 Actualizar cliente
+PUT http://localhost:3000/api/clients/update/98765432
 content-type: application/json
 
 {
-    "id": "39089832",
-    "name": "Libia Annichiarico",
-    "password": "Ciao1234"
+    "nombre": "Carlos Mendez Lopez",
+    "telefono": "3009999999",
+    "email": "carlos.mendez@email.com"
 }
 
-### Bloquear usuario por su id
-PUT   http://localhost:3000/api/users/locked/39089832
+### ========================================
+### FASE 3: GESTIÓN DE VEHÍCULOS
+### ========================================
+
+### 3.1 Obtener todos los vehículos
+GET http://localhost:3000/api/vehicles/
+
+###
+### 3.2 Registrar vehículo para cliente 1
+POST http://localhost:3000/api/vehicles/add
 content-type: application/json
 
 {
-    "locked": true
+    "placa": "ABC1234",
+    "marca": "Toyota",
+    "modelo": "Corolla",
+    "anio": 2020,
+    "kilometraje": 45000,
+    "motor": 1800,
+    "transmision": "Automática",
+    "cliente_id": "98765432"
 }
 
-### actualizar usuario por su id
-PUT  http://localhost:3000/api/users/update/39089832
+###
+### 3.3 Registrar segundo vehículo para cliente 1
+POST http://localhost:3000/api/vehicles/add
 content-type: application/json
 
 {
-    "name": "Libia Maria Annichiarico",
-    "role": "vendedor"
-}
-
-### Cerrar sesión
-POST http://localhost:3000/api/auth/logout
-
-### recuperar vehiculos
-GET   http://localhost:3000/api/vehicles/
-
-### registrar vehculo
-POST  http://localhost:3000/api/vehicles/add
-content-type: application/json
-
-{
-    "placa": "CRL690",
-    "marca": "FORD",
-    "modelo": "SPORTAGE",
-    "anio": 2010,
-    "kilometraje": 177252,
-    "motor": 2400,
+    "placa": "XYZ9876",
+    "marca": "Honda",
+    "modelo": "Civic",
+    "anio": 2019,
+    "kilometraje": 65000,
+    "motor": 1600,
     "transmision": "Manual",
-    "cliente_id": "84025820"
+    "cliente_id": "98765432"
 }
 
-### Actualizar vehiculo 
-PUT  http://localhost:3000/api/vehicles/update/GNV321
+###
+### 3.4 Registrar vehículo para cliente 2
+POST http://localhost:3000/api/vehicles/add
 content-type: application/json
 
 {
-    "placa": "GNV321",
+    "placa": "DEF5678",
     "marca": "Chevrolet",
-    "modelo": "corsa",
-    "anio": 2004,
+    "modelo": "Spark",
+    "anio": 2018,
     "kilometraje": 80000,
-    "motor": 2000,
+    "motor": 1400,
     "transmision": "Manual",
-    "cliente_id": "1129574805"
+    "cliente_id": "87654321"
 }
 
-### eliminar vehiculo
-DELETE   http://localhost:3000/api/vehicles/delete/ZAB40E
+###
+### 3.5 Obtener vehículos de un cliente específico
+GET http://localhost:3000/api/vehicles/client/98765432
 
-### obtener productos
+###
+### 3.6 Actualizar vehículo
+PUT http://localhost:3000/api/vehicles/update/ABC1234
+content-type: application/json
+
+{
+    "marca": "Toyota",
+    "modelo": "Corolla S",
+    "anio": 2020,
+    "kilometraje": 48000,
+    "motor": 1800,
+    "transmision": "Automática",
+    "cliente_id": "98765432"
+}
+
+### ========================================
+### FASE 4: GESTIÓN DE PRODUCTOS
+### ========================================
+
+### 4.1 Obtener todos los productos
 GET http://localhost:3000/api/products/
 
-### Agregar producto a la base de  datos
+###
+### 4.2 Crear producto 1
 POST http://localhost:3000/api/products/add
 content-type: application/json
 
 {
-    "nombre": "Motor Elf 5W20 1/4",
-    "precio": 64000
+    "nombre": "Cambio de aceite",
+    "precio": 50000
 }
 
-### actualizar producto
-PUT  http://localhost:3000/api/products/update/1
+###
+### 4.3 Crear producto 2
+POST http://localhost:3000/api/products/add
 content-type: application/json
 
 {
-    "nombre": "Sin",
-    "precio": 98000
+    "nombre": "Filtro de aire",
+    "precio": 35000
 }
 
-### eliminar producto
-DELETE   http://localhost:3000/api/products/delete/3
+###
+### 4.4 Crear producto 3
+POST http://localhost:3000/api/products/add
+content-type: application/json
 
+{
+    "nombre": "Balatas de freno",
+    "precio": 120000
+}
 
-### recuperer todas las ordenes
-GET http://localhost:3000/api/orders
+###
+### 4.5 Crear producto 4
+POST http://localhost:3000/api/products/add
+content-type: application/json
 
-### Agregar Orden a la base de  datos
+{
+    "nombre": "Bujías",
+    "precio": 25000
+}
+
+###
+### 4.6 Actualizar producto
+PUT http://localhost:3000/api/products/update/1
+content-type: application/json
+
+{
+    "nombre": "Cambio de aceite y filtro",
+    "precio": 75000
+}
+
+### ========================================
+### FASE 5: GESTIÓN DE ÓRDENES
+### ========================================
+
+### 5.1 Obtener todas las órdenes
+GET http://localhost:3000/api/orders/
+
+###
+### 5.2 Crear orden 1 (cambio de aceite y filtro)
 POST http://localhost:3000/api/orders/add
 content-type: application/json
 
 {
-  "fecha_orden": "now",
-  "id_cliente": "84025820",
-  "placa_vehic": "CRL690",
-  "total_orden": 139000,
+  "fecha_orden": "2026-04-24",
+  "id_cliente": "98765432",
+  "placa_vehic": "ABC1234",
+  "total_orden": 110000,
   "detalle": [
+    {
+      "producto_id": 1,
+      "cantidad": 1,
+      "precio_unitario": 75000
+    },
     {
       "producto_id": 2,
       "cantidad": 1,
-      "precio_unitario": 55000
-    },
-    {
-      "producto_id": 15,
-      "cantidad": 1,
-      "precio_unitario": 20000
-    },
-    {
-      "producto_id": 23,
-      "cantidad": 1,
-      "precio_unitario": 64000
+      "precio_unitario": 35000
     }
   ]
 }
 
-### eliminar prodOrdenucto
-DELETE   http://localhost:3000/api/orders/delete/3
+###
+### 5.3 Crear orden 2 (mantenimiento completo)
+POST http://localhost:3000/api/orders/add
+content-type: application/json
 
-### Obtener detalle ordenes
-GET    http://localhost:3000/api/orders/detail/2
+{
+  "fecha_orden": "2026-04-24",
+  "id_cliente": "87654321",
+  "placa_vehic": "DEF5678",
+  "total_orden": 230000,
+  "detalle": [
+    {
+      "producto_id": 1,
+      "cantidad": 1,
+      "precio_unitario": 75000
+    },
+    {
+      "producto_id": 3,
+      "cantidad": 1,
+      "precio_unitario": 120000
+    },
+    {
+      "producto_id": 4,
+      "cantidad": 1,
+      "precio_unitario": 35000
+    }
+  ]
+}
+
+###
+### 5.4 Obtener detalles de la orden 1
+GET http://localhost:3000/api/orders/detail/1
+
+###
+### 5.5 Obtener detalles de la orden 2
+GET http://localhost:3000/api/orders/detail/2
+
+### ========================================
+### FASE 6: GESTIÓN DE USUARIOS (ADMIN)
+### ========================================
+
+### 6.1 Obtener todos los usuarios
+GET http://localhost:3000/api/users/
+
+###
+### 6.2 Obtener usuario específico
+GET http://localhost:3000/api/users/1234567890
+
+###
+### 6.3 Cambiar contraseña del usuario
+PUT http://localhost:3000/api/users/changepass/1234567890
+content-type: application/json
+
+{
+    "password": "NewPassword456"
+}
+
+###
+### 6.4 Actualizar información del usuario
+PUT http://localhost:3000/api/users/update/1234567890
+content-type: application/json
+
+{
+    "name": "Usuario Actualizado",
+    "role": "gerente"
+}
+
+### ========================================
+### FASE 7: PRUEBAS DE ELIMINACIÓN (FINAL)
+### ========================================
+
+### NOTA: Las operaciones de eliminación requieren que no haya dependencias
+### Por ejemplo: No se puede eliminar un cliente que tiene vehículos
+
+### 7.1 Intentar eliminar producto (fallará si está en órdenes)
+DELETE http://localhost:3000/api/products/delete/4
+
+###
+### 7.2 Intentar eliminar vehículo (fallará si tiene órdenes)
+DELETE http://localhost:3000/api/vehicles/delete/DEF5678
+
+###
+### 7.3 Intentar eliminar cliente (fallará si tiene vehículos u órdenes)
+DELETE http://localhost:3000/api/clients/delete/87654321
+
+### ========================================
+### FASE 8: CIERRE DE SESIÓN
+### ========================================
+
+### 8.1 Cerrar sesión (LOGOUT)
+POST http://localhost:3000/api/auth/logout
+
+### ========================================
+### NOTAS IMPORTANTES:
+### ========================================
+### 1. ORDEN DE EJECUCIÓN: Ejecuta las pruebas en orden de fase
+### 2. DEPENDENCIAS: Respeta las dependencias entre tablas
+### 3. TOKEN: Después de login, el token se guarda en la cookie automáticamente
+### 4. VALIDACIONES: El servidor valida todos los datos de entrada
+### 5. INTEGRIDAD: No se permite eliminar registros que tienen dependencias
