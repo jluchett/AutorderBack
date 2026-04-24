@@ -89,7 +89,7 @@ content-type: application/json
     "modelo": "Corolla",
     "anio": 2020,
     "kilometraje": 45000,
-    "motor": 1800,
+    "motor": 1.8,
     "transmision": "Automática",
     "cliente_id": "98765432"
 }
@@ -105,7 +105,7 @@ content-type: application/json
     "modelo": "Civic",
     "anio": 2019,
     "kilometraje": 65000,
-    "motor": 1600,
+    "motor": 1.6,
     "transmision": "Manual",
     "cliente_id": "98765432"
 }
@@ -121,7 +121,7 @@ content-type: application/json
     "modelo": "Spark",
     "anio": 2018,
     "kilometraje": 80000,
-    "motor": 1400,
+    "motor": 1.4,
     "transmision": "Manual",
     "cliente_id": "87654321"
 }
@@ -140,7 +140,7 @@ content-type: application/json
     "modelo": "Corolla S",
     "anio": 2020,
     "kilometraje": 48000,
-    "motor": 1800,
+    "motor": 1.8,
     "transmision": "Automática",
     "cliente_id": "98765432"
 }
