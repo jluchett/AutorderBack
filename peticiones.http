@@ -1,3 +1,12 @@
+### Iniciar sesión (LOGIN)
+POST http://localhost:3000/api/auth/login
+content-type: application/json
+
+{
+    "id": "39089832",
+    "password": "Ciao1234"
+}
+
 ### recuperer todos los clientes
 GET http://localhost:3000/api/clients/
 

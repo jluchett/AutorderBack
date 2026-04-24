@@ -5,6 +5,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const db = require('./src/database/db')
 const jwt = require('jsonwebtoken')
+const errorHandler = require('./src/middlewares/errorHandler')
 require('dotenv').config()
 
 // Configuración de Express
@@ -41,6 +42,9 @@ app.use('/api/clients', clientRouter)
 app.use('/api/vehicles', vehicleRouter)
 app.use('/api/products', productRouter)
 app.use('/api/orders', orderRouter)
+
+// Middleware de manejo de errores (debe ir al final)
+app.use(errorHandler)
 
 // Puerto de escucha
 const port = 3000

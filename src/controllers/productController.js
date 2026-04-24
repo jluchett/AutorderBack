@@ -1,5 +1,6 @@
 //productController.js
 const db = require("../database/db");
+const { validateName, validatePrice } = require("../utils/validators");
 
 const getProducts = async (req, res) => {
   try {
@@ -22,6 +23,19 @@ const getProducts = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { nombre, precio } = req.body;
+    
+    // Validar campos requeridos
+    if (!nombre || precio === undefined) {
+      return res.status(400).json({
+        message: "Los campos nombre y precio son obligatorios",
+        success: false,
+      });
+    }
+    
+    // Validar formato de datos
+    validateName(nombre);
+    validatePrice(precio);
+    
     // Verificar si el producto ya existe en la base de datos
     const query = "SELECT * FROM prodserv WHERE nombre = $1";
     const values = [nombre];
@@ -33,7 +47,8 @@ const createProduct = async (req, res) => {
         success: false,
       });
     }
-    //Ingresar producto a la base de datos
+    
+    // Ingresar producto a la base de datos
     const insertQuery = "INSERT INTO prodserv (nombre, precio) VALUES ($1, $2)";
     const insertValues = [nombre, precio];
     await db.query(insertQuery, insertValues);
@@ -42,9 +57,9 @@ const createProduct = async (req, res) => {
       message: "producto agregado con exito",
     });
   } catch (error) {
-    console.error("Eror al crear producto", error);
+    console.error("Error al crear producto", error);
     res.status(500).json({
-      message: "Error al crear producto",
+      message: error.message || "Error al crear producto",
       success: false,
     });
   }
@@ -55,27 +70,38 @@ const updateProduct = async (req, res) => {
     const { id } = req.params;
     const { nombre, precio } = req.body;
 
+    // Validar que al menos un campo a actualizar sea proporcionado
+    if (!nombre && precio === undefined) {
+      return res.status(400).json({
+        message: "Debe proporcionar al menos un campo para actualizar",
+        success: false,
+      });
+    }
+
+    // Validar formatos si se proporcionan
+    if (nombre) validateName(nombre);
+    if (precio !== undefined) validatePrice(precio);
+
     const query = "UPDATE prodserv SET nombre = $2, precio = $3 WHERE id = $1";
     const values = [id, nombre, precio];
 
     const result = await db.query(query, values);
 
     if (result.rowCount === 0) {
-      // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({
-        message: "No se pudo actualizar producto",
+        message: "No se pudo actualizar producto - Producto no encontrado",
         success: false,
       });
     }
-    // Devolver la respuesta con los datos actualizados
+    
     return res.status(200).json({
       message: "Datos del producto actualizados",
       success: true,
     });
   } catch (error) {
-    console.error("Eror al actualizar producto", error);
+    console.error("Error al actualizar producto", error);
     res.status(500).json({
-      message: "Eror al actualizar producto",
+      message: error.message || "Error al actualizar producto",
       success: false,
     });
   }
@@ -84,14 +110,28 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const query = "Delete FROM prodserv WHERE id = $1";
-    const result = await db.query(query, [id]);
-    if (result.rowCount === 0) {
+    
+    // Verificar si el producto está siendo usado en órdenes
+    const detalleQuery = "SELECT COUNT(*) FROM detalle_ordenes WHERE producto_id = $1";
+    const detalleResult = await db.query(detalleQuery, [id]);
+    
+    if (detalleResult.rows[0].count > 0) {
       return res.status(400).json({
-        message: "No se pudo eliminar el producto",
+        message: "No se puede eliminar el producto. Está siendo usado en órdenes",
         success: false,
       });
     }
+    
+    const query = "DELETE FROM prodserv WHERE id = $1";
+    const result = await db.query(query, [id]);
+    
+    if (result.rowCount === 0) {
+      return res.status(400).json({
+        message: "No se pudo eliminar el producto - No encontrado",
+        success: false,
+      });
+    }
+    
     return res.status(201).json({
       message: "Producto eliminado con exito",
       success: true,
@@ -99,7 +139,7 @@ const deleteProduct = async (req, res) => {
   } catch (error) {
     console.error("Error al eliminar producto", error);
     res.status(500).json({
-      message: "Error al eliminar producto",
+      message: error.message || "Error al eliminar producto",
       success: false,
     });
   }

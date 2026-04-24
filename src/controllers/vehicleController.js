@@ -1,5 +1,6 @@
 //vehicleController.js
 const db = require("../database/db");
+const { validateId, validatePlate, validateName, validateYear, validateMileage } = require("../utils/validators");
 
 const getVehicles = async (req, res) => {
   try {
@@ -31,7 +32,35 @@ const createVehicle = async (req, res) => {
       transmision,
       cliente_id,
     } = req.body;
-    // Verificar si el vehiculo ya existe en la base de datos
+    
+    // Validar campos requeridos
+    if (!placa || !marca || !modelo || !anio || !cliente_id) {
+      return res.status(400).json({
+        message: "Los campos placa, marca, modelo, anio y cliente_id son obligatorios",
+        success: false,
+      });
+    }
+    
+    // Validar formatos
+    validatePlate(placa);
+    validateName(marca);
+    validateName(modelo);
+    validateYear(anio);
+    validateId(cliente_id);
+    if (kilometraje !== undefined) validateMileage(kilometraje);
+    
+    // Verificar si el cliente existe
+    const clienteQuery = "SELECT id FROM clientes WHERE id = $1";
+    const clienteResult = await db.query(clienteQuery, [cliente_id]);
+    
+    if (clienteResult.rows.length === 0) {
+      return res.status(400).json({
+        message: "El cliente especificado no existe",
+        success: false,
+      });
+    }
+    
+    // Verificar si el vehiculo ya existe
     const query = "SELECT * FROM vehiculos WHERE placa = $1";
     const values = [placa];
     const result = await db.query(query, values);
@@ -42,7 +71,8 @@ const createVehicle = async (req, res) => {
         success: false,
       });
     }
-    //Inngresar vehiculo a la base de datos
+    
+    // Ingresar vehículo a la base de datos
     const insertQuery =
       "INSERT INTO vehiculos (placa, marca, modelo, anio, kilometraje, motor, transmision, cliente_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
     const insertValues = [
@@ -50,9 +80,9 @@ const createVehicle = async (req, res) => {
       marca,
       modelo,
       anio,
-      kilometraje,
-      motor,
-      transmision,
+      kilometraje || null,
+      motor || null,
+      transmision || null,
       cliente_id,
     ];
     await db.query(insertQuery, insertValues);
@@ -61,9 +91,9 @@ const createVehicle = async (req, res) => {
       message: "Vehiculo registrado con exito",
     });
   } catch (error) {
-    console.error("Eror al ingresar vehiculo", error);
+    console.error("Error al ingresar vehiculo", error);
     res.status(500).json({
-      message: "Error al registrar vehiculo",
+      message: error.message || "Error al registrar vehiculo",
       success: false,
     });
   }
@@ -74,6 +104,34 @@ const updateVehicle = async (req, res) => {
     const { placa } = req.params;
     const { marca, modelo, anio, kilometraje, motor, transmision, cliente_id } =
       req.body;
+
+    // Validar que al menos un campo a actualizar sea proporcionado
+    if (!marca && !modelo && !anio && !kilometraje && !motor && !transmision && !cliente_id) {
+      return res.status(400).json({
+        message: "Debe proporcionar al menos un campo para actualizar",
+        success: false,
+      });
+    }
+
+    // Validar formatos si se proporcionan
+    if (marca) validateName(marca);
+    if (modelo) validateName(modelo);
+    if (anio) validateYear(anio);
+    if (kilometraje) validateMileage(kilometraje);
+    if (cliente_id) validateId(cliente_id);
+
+    // Si se proporciona cliente_id, verificar que exista
+    if (cliente_id) {
+      const clienteQuery = "SELECT id FROM clientes WHERE id = $1";
+      const clienteResult = await db.query(clienteQuery, [cliente_id]);
+      
+      if (clienteResult.rows.length === 0) {
+        return res.status(400).json({
+          message: "El cliente especificado no existe",
+          success: false,
+        });
+      }
+    }
 
     const query =
       "UPDATE vehiculos SET marca = $2, modelo = $3, anio = $4, kilometraje = $5, motor = $6, transmision = $7, cliente_id = $8 WHERE placa = $1";
@@ -91,21 +149,20 @@ const updateVehicle = async (req, res) => {
     const result = await db.query(query, values);
 
     if (result.rowCount === 0) {
-      // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({
         message: "Vehiculo no encontrado en la bd",
         success: false,
       });
     }
-    // Devolver la respuesta con los datos actualizados
+    
     return res.status(200).json({
       message: "Datos del vehiculo actualizados",
       success: true,
     });
   } catch (error) {
-    console.error("Eror al actualizar info del vehiculo", error);
+    console.error("Error al actualizar info del vehiculo", error);
     res.status(500).json({
-      message: "Eror al actualizar datos del vehiculo",
+      message: error.message || "Error al actualizar datos del vehiculo",
       success: false,
     });
   }
@@ -114,14 +171,28 @@ const updateVehicle = async (req, res) => {
 const deleteVehicle = async (req, res) => {
   try {
     const { placa } = req.params;
-    const query = "Delete FROM vehiculos WHERE placa = $1";
+    
+    // Verificar si el vehículo tiene órdenes asociadas
+    const ordenesQuery = "SELECT COUNT(*) FROM ordenes WHERE vehiculo_placa = $1";
+    const ordenesResult = await db.query(ordenesQuery, [placa]);
+    
+    if (ordenesResult.rows[0].count > 0) {
+      return res.status(400).json({
+        message: "No se puede eliminar el vehículo. Tiene órdenes registradas",
+        success: false,
+      });
+    }
+    
+    const query = "DELETE FROM vehiculos WHERE placa = $1";
     const result = await db.query(query, [placa]);
+    
     if (result.rowCount === 0) {
       return res.status(400).json({
         message: "No se ha eliminado vehiculo",
         success: false,
       });
     }
+    
     return res.status(201).json({
       message: "Vehiculo eliminado con exito",
       success: true,
@@ -129,15 +200,19 @@ const deleteVehicle = async (req, res) => {
   } catch (error) {
     console.error("Error al eliminar Vehiculo", error);
     res.status(500).json({
-      message: "Eror al eliminar Vehiculo",
+      message: error.message || "Error al eliminar Vehiculo",
       success: false,
     });
   }
 };
 
-const getVehiclesClient = async (req, res)=> {
+const getVehiclesClient = async (req, res) => {
   try {
-    const { idClient } = req.params
+    const { idClient } = req.params;
+    
+    // Verificar que el cliente exista
+    validateId(idClient);
+    
     const query = "SELECT placa, marca, modelo, anio, kilometraje FROM vehiculos WHERE cliente_id = $1";
     const result = await db.query(query, [idClient]);
 
@@ -149,10 +224,12 @@ const getVehiclesClient = async (req, res)=> {
       vehiclesClient,
     });
   } catch (error) {
-    console.error("Error al obtener Vehiculos del cliente", error);
-    res.status(500).json({ message: "Error al obtener Vehiculos del cliente" });
+    console.error("Error al obtener vehículos del cliente", error);
+    res.status(500).json({
+      message: error.message || "Error al obtener vehículos del cliente",
+    });
   }
-}
+};
 
 module.exports = {
   getVehicles,
