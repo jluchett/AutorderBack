@@ -30,12 +30,20 @@ app.use((req, res, next) => {
 // Agregar las rutas al middleware principal de tu aplicación
 const userRouter = require('./src/routes/userRoutes')
 const authRouter = require('./src/routes/authRoutes')
+const clientRouter = require('./src/routes/clientRoutes')
+const vehicleRouter = require('./src/routes/vehicleRoutes')
+const productRouter = require('./src/routes/productRoutes')
+const orderRouter = require('./src/routes/orderRoutes')
 
-app.use('/users', userRouter)
-app.use('/auth', authRouter)
+app.use('/api/users', userRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/clients', clientRouter)
+app.use('/api/vehicles', vehicleRouter)
+app.use('/api/products', productRouter)
+app.use('/api/orders', orderRouter)
 
 // Puerto de escucha
-const port = process.env.PORT || 3000
+const port = 3000
 app.listen(port, '0.0.0.0', () => {
   console.log(`Servidor corriendo en el puerto ${port}`)
 })

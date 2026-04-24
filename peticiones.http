@@ -1,8 +1,8 @@
 ### recuperer todos los clientes
-GET http://localhost:3001/clients/
+GET http://localhost:3000/api/clients/
 
 ### agregar cliente
-POST http://localhost:3001/clients/add
+POST http://localhost:3000/api/clients/add
 content-type: application/json
 
 {
@@ -13,7 +13,7 @@ content-type: application/json
 }
 
 ### actualizar cliente
-PUT  http://localhost:3001/clients/update/84025820
+PUT  http://localhost:3000/api/clients/update/84025820
 content-type: application/json
 
 {
@@ -23,14 +23,14 @@ content-type: application/json
 }
 
 ### recuperar todos los usuarios
-GET http://localhost:3001/users/
+GET http://localhost:3000/api/users/
 
 ### recuperar un usuario especifico por id
-GET http://localhost:3001/users/1129574805
+GET http://localhost:3000/api/users/1129574805
 
 
 ### Crear usuario
-POST  http://localhost:3001/users/create
+POST  http://localhost:3000/api/users/create
 content-type: application/json
 
 {
@@ -40,7 +40,7 @@ content-type: application/json
 }
 
 ### Bloquear usuario por su id
-PUT   http://localhost:3001/users/locked/39089832
+PUT   http://localhost:3000/api/users/locked/39089832
 content-type: application/json
 
 {
@@ -48,7 +48,7 @@ content-type: application/json
 }
 
 ### actualizar usuario por su id
-POST  http://localhost:3001/users/update/39089832
+POST  http://localhost:3000/api/users/update/39089832
 content-type: application/json
 
 {
@@ -57,10 +57,10 @@ content-type: application/json
 }
 
 ### recuperar vehiculos
-GET   http://localhost:3001/vehicles/
+GET   http://localhost:3000/api/vehicles/
 
 ### registrar vehculo
-POST  http://localhost:3001/vehicles/add
+POST  http://localhost:3000/api/vehicles/add
 content-type: application/json
 
 {
@@ -75,7 +75,7 @@ content-type: application/json
 }
 
 ### Actualizar vehiculo 
-PUT  http://localhost:3001/vehicles/update/GNV321
+PUT  http://localhost:3000/api/vehicles/update/GNV321
 content-type: application/json
 
 {
@@ -90,13 +90,13 @@ content-type: application/json
 }
 
 ### eliminar vehiculo
-DELETE   http://localhost:3001/vehicles/delete/ZAB40E
+DELETE   http://localhost:3000/api/vehicles/delete/ZAB40E
 
 ### obtener productos
-GET http://localhost:3001/products/
+GET http://localhost:3000/api/products/
 
 ### Agregar producto a la base de  datos
-POST http://localhost:3001/products/add
+POST http://localhost:3000/api/products/add
 content-type: application/json
 
 {
@@ -105,7 +105,7 @@ content-type: application/json
 }
 
 ### actualizar producto
-PUT  http://localhost:3001/products/update/1
+PUT  http://localhost:3000/api/products/update/1
 content-type: application/json
 
 {
@@ -114,14 +114,14 @@ content-type: application/json
 }
 
 ### eliminar producto
-DELETE   http://localhost:3001/products/delete/3
+DELETE   http://localhost:3000/api/products/delete/3
 
 
 ### recuperer todas las ordenes
-GET http://localhost:3001/orders
+GET http://localhost:3000/api/orders
 
 ### Agregar Orden a la base de  datos
-POST http://localhost:3001/orders/add
+POST http://localhost:3000/api/orders/add
 content-type: application/json
 
 {
@@ -149,7 +149,7 @@ content-type: application/json
 }
 
 ### eliminar prodOrdenucto
-DELETE   http://localhost:3001/orders/delete/3
+DELETE   http://localhost:3000/api/orders/delete/3
 
 ### Obtener detalle ordenes
-GET    http://localhost:3001/orders/detail/2
+GET    http://localhost:3000/api/orders/detail/2
