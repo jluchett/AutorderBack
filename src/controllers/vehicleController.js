@@ -39,7 +39,7 @@ const createVehicle = async (req, res) => {
     if (result.rows.length > 0) {
       return res.status(400).json({
         message: "El vehiculo ya fue registrado",
-        succes: false,
+        success: false,
       });
     }
     //Inngresar vehiculo a la base de datos
@@ -57,14 +57,14 @@ const createVehicle = async (req, res) => {
     ];
     await db.query(insertQuery, insertValues);
     res.status(201).json({
-      succes: true,
+      success: true,
       message: "Vehiculo registrado con exito",
     });
   } catch (error) {
     console.error("Eror al ingresar vehiculo", error);
     res.status(500).json({
       message: "Error al registrar vehiculo",
-      succes: false,
+      success: false,
     });
   }
 };
@@ -94,19 +94,19 @@ const updateVehicle = async (req, res) => {
       // La consulta no modificó ninguna fila en la base de datos
       return res.status(404).json({
         message: "Vehiculo no encontrado en la bd",
-        succes: false,
+        success: false,
       });
     }
     // Devolver la respuesta con los datos actualizados
     return res.status(200).json({
       message: "Datos del vehiculo actualizados",
-      succes: true,
+      success: true,
     });
   } catch (error) {
     console.error("Eror al actualizar info del vehiculo", error);
     res.status(500).json({
       message: "Eror al actualizar datos del vehiculo",
-      succes: false,
+      success: false,
     });
   }
 };
@@ -119,18 +119,18 @@ const deleteVehicle = async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(400).json({
         message: "No se ha eliminado vehiculo",
-        succes: false,
+        success: false,
       });
     }
     return res.status(201).json({
       message: "Vehiculo eliminado con exito",
-      succes: true,
+      success: true,
     });
   } catch (error) {
     console.error("Error al eliminar Vehiculo", error);
     res.status(500).json({
       message: "Eror al eliminar Vehiculo",
-      succes: false,
+      success: false,
     });
   }
 };

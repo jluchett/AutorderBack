@@ -48,13 +48,16 @@ content-type: application/json
 }
 
 ### actualizar usuario por su id
-POST  http://localhost:3000/api/users/update/39089832
+PUT  http://localhost:3000/api/users/update/39089832
 content-type: application/json
 
 {
     "name": "Libia Maria Annichiarico",
     "role": "vendedor"
 }
+
+### Cerrar sesión
+POST http://localhost:3000/api/auth/logout
 
 ### recuperar vehiculos
 GET   http://localhost:3000/api/vehicles/
