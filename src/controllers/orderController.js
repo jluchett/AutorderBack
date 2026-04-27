@@ -106,17 +106,17 @@ const getDetail = async (req, res) => {
 
     const query = `
       SELECT 
-        do.id AS detalle_id,
-        do.orden_id,
-        do.producto_id,
+        dor.id AS detalle_id,
+        dor.orden_id,
+        dor.producto_id,
         p.nombre AS producto_nombre,
-        do.cantidad,
-        do.precio_unitario,
-        (do.cantidad * do.precio_unitario) AS subtotal
-      FROM detalle_ordenes do
-      JOIN productos p ON do.producto_id = p.id
-      WHERE do.orden_id = $1
-      ORDER BY do.id
+        dor.cantidad,
+        dor.precio_unitario,
+        (dor.cantidad * dor.precio_unitario) AS subtotal
+      FROM detalle_ordenes dor
+      JOIN prodserv p ON dor.producto_id = p.id
+      WHERE dor.orden_id = $1
+      ORDER BY dor.id
     `
 
     const result = await db.query(query, [id])
@@ -128,9 +128,11 @@ const getDetail = async (req, res) => {
     })
   } catch (error) {
     console.error('Error al obtener detalles de orden:', error)
+    console.error('Detalles del error:', error.message, error.code)
     res.status(500).json({
       success: false,
-      message: 'Error al obtener detalles de la orden'
+      message: 'Error al obtener detalles de la orden',
+      error: error.message
     })
   }
 }

@@ -32,13 +32,34 @@ const login = async (req, res) => {
             name: user.rows[0].name,
             role: user.rows[0].role,
             locked: user.rows[0].locked,
-            token: token
+            token
           }
         })
     }
   } catch (error) {
-    res.status(500).json({
-      mensaje: error.message,
+    // Errores de autenticación (credenciales inválidas)
+    const authErrors = [
+      'El usuario no existe',
+      'La contraseña no es valida',
+      'Usuario bloqueado, solicitar desbloqueo'
+    ]
+
+    // Errores de validación (400 - Bad Request)
+    const validationErrors = [
+      'El Id debe ser una cadena de texto',
+      'El Id no puede tener mas de 12 caracteres',
+      'El password debe tener minimo 8 caracteres'
+    ]
+
+    let statusCode = 500
+    if (authErrors.includes(error.message)) {
+      statusCode = 401
+    } else if (validationErrors.includes(error.message)) {
+      statusCode = 400
+    }
+
+    res.status(statusCode).json({
+      message: error.message,
       success: false
     })
   }

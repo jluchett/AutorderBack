@@ -32,11 +32,11 @@ app.use((req, res, next) => {
     try {
       const data = jwt.verify(token, process.env.SECRET)
       req.session.user = data
-      return next()
     } catch (err) {
       console.error('Token inválido en header:', err.message)
     }
   }
+  next()
 })
 
 // Agregar las rutas al middleware principal de tu aplicación
