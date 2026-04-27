@@ -14,5 +14,6 @@ router.get('/', controllerUser.getUsers)
 router.put('/locked/:id', controllerUser.lockUser)
 router.put('/update/:id', controllerUser.updateUser)
 router.put('/changepass/:id', controllerUser.changePassword)
+router.delete('/:id', controllerUser.deleteUser)
 
 module.exports = router

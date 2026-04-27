@@ -16,16 +16,27 @@ db.connect()
 // Configuración de middlewares
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3003',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
+
 app.use(cookieParser())
 app.use((req, res, next) => {
-  const token = req.cookies.access_token
   req.session = { user: null }
-  try {
-    const data = jwt.verify(token, process.env.SECRET)
-    req.session.user = data
-  } catch {}
-  next()
+  const authHeader = req.headers.authorization
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7, authHeader.length)
+    try {
+      const data = jwt.verify(token, process.env.SECRET)
+      req.session.user = data
+      return next()
+    } catch (err) {
+      console.error('Token inválido en header:', err.message)
+    }
+  }
 })
 
 // Agregar las rutas al middleware principal de tu aplicación

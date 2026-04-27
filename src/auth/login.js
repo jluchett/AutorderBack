@@ -20,14 +20,20 @@ const login = async (req, res) => {
         .cookie('access_token', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
+          sameSite: 'lax',
           maxAge: 1000 * 60 * 60
         })
-        .status(200).json({
-          mensaje: 'Inicio de sesion exitoso',
-          user: user.rows[0].name,
-          token,
-          success: true
+        .status(200)
+        .json({
+          success: true,
+          message: 'Inicio de sesión exitoso',
+          user: {
+            id: user.rows[0].id,
+            name: user.rows[0].name,
+            role: user.rows[0].role,
+            locked: user.rows[0].locked,
+            token: token
+          }
         })
     }
   } catch (error) {

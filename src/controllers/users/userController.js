@@ -4,6 +4,7 @@ const getUsers = require('./getUsers')
 const lockUser = require('./lockUser')
 const updateUser = require('./updateUser')
 const changePassword = require('./changePassword')
+const deleteUser = require('./deleteUser')
 
 module.exports = {
   createUser,
@@ -11,5 +12,6 @@ module.exports = {
   getUsers,
   lockUser,
   updateUser,
-  changePassword
+  changePassword,
+  deleteUser
 }
