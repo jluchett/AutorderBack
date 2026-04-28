@@ -20,12 +20,12 @@ const createUser = async (req, res) => {
     const insertValues = [id, name, hashedPassword, role]
     const result = await db.query(insertQuery, insertValues)
     res.status(201).json({
-      mensaje: `Usuario ${result.rows[0].name} creado exitosamente`,
+      message: `Usuario ${result.rows[0].name} creado exitosamente`,
       success: true
     })
   } catch (error) {
     res.status(400).json({
-      mensaje: error.message,
+      message: error.message,
       success: false
     })
   }

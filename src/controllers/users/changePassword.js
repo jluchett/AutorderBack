@@ -14,7 +14,7 @@ const changePassword = async (req, res) => {
     const result = await db.query('UPDATE users SET password = $1 WHERE id = $2', [hashedPassword, id])
     if (result.rowCount > 0) {
       res.status(200).json({
-        mensaje: 'Contraseña actualizada',
+        message: 'Contraseña actualizada',
         success: true
       })
     } else {
@@ -22,7 +22,7 @@ const changePassword = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      mensaje: error.message,
+      message: error.message,
       success: false
     })
   }

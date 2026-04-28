@@ -7,12 +7,8 @@ const getOrders = async (req, res) => {
     const query =
       "SELECT o.id AS orden_id, TO_CHAR(o.fecha, 'YYYY-MM-DD') AS fecha_orden, c.id AS id_cliente, c.nombre AS nombre_cliente, c.telefono AS telefono_cliente, v.placa AS placa_vehi, o.total FROM ordenes o JOIN clientes c ON o.cliente_id = c.id JOIN vehiculos v ON o.vehiculo_placa = v.placa ORDER BY o.fecha DESC"
     const result = await db.query(query)
-
-    if (result.rows.length === 0) {
-      return res.status(400).json({ message: 'no hay ordenes registradas' })
-    }
-    const orders = result.rows
-    res.status(201).json({
+    const orders = result.rows || []
+    res.status(200).json({
       orders
     })
   } catch (error) {
@@ -62,23 +58,23 @@ const deleteOrder = async (req, res) => {
   try {
     const { id } = req.params
 
-    await db.query('BEGIN') // Iniciar una transacción
+    await db.query('BEGIN')
 
-    // 1. Realizar una copia de seguridad en otras tablas (por ejemplo, backup_ordenes y backup_detalle_ordenes)
-    const backupQueryor = 'INSERT INTO ordenes_del (SELECT * FROM ordenes WHERE id = $1)'
-    await db.query(backupQueryor, [id])
-
-    const backupQuerydor = 'INSERT INTO detalle_ordenes_del (SELECT * FROM detalle_ordenes WHERE orden_id = $1)'
-    await db.query(backupQuerydor, [id])
-
-    // 2. Eliminar las órdenes y su detalle de la tabla principal
     const deldetordquery = 'DELETE FROM detalle_ordenes WHERE orden_id = $1'
     await db.query(deldetordquery, [id])
 
     const deleteOrderQuery = 'DELETE FROM ordenes WHERE id = $1'
-    await db.query(deleteOrderQuery, [id])
+    const deleteResult = await db.query(deleteOrderQuery, [id])
 
-    await db.query('COMMIT') // Confirmar la transacción
+    if (deleteResult.rowCount === 0) {
+      await db.query('ROLLBACK')
+      return res.status(404).json({
+        message: 'Orden no encontrada',
+        success: false
+      })
+    }
+
+    await db.query('COMMIT')
 
     return res.status(201).json({
       message: 'Orden eliminada con éxito',

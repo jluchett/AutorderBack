@@ -7,12 +7,8 @@ const getVehicles = async (req, res) => {
   try {
     const query = 'SELECT v.placa, v.marca, v.modelo, v.anio, v.kilometraje, v.motor, v.transmision, v.cliente_id, c.nombre AS nombre_cliente FROM vehiculos v JOIN clientes c ON v.cliente_id = c.id ORDER BY v.placa'
     const result = await db.query(query)
-
-    if (result.rows.length === 0) {
-      return res.status(400).json({ message: 'no hay vehiculos registrados' })
-    }
-    const vehicles = result.rows
-    res.status(201).json({
+    const vehicles = result.rows || []
+    res.status(200).json({
       vehicles
     })
   } catch (error) {
@@ -211,17 +207,12 @@ const getVehiclesClient = async (req, res) => {
   try {
     const { idClient } = req.params
 
-    // Verificar que el cliente exista
     validateId(idClient)
 
     const query = 'SELECT placa, marca, modelo, anio, kilometraje FROM vehiculos WHERE cliente_id = $1'
     const result = await db.query(query, [idClient])
-
-    if (result.rows.length === 0) {
-      return res.status(400).json({ message: 'no hay vehiculos registrados al cliente' })
-    }
-    const vehiclesClient = result.rows
-    res.status(201).json({
+    const vehiclesClient = result.rows || []
+    res.status(200).json({
       vehiclesClient
     })
   } catch (error) {

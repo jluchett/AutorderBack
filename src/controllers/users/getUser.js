@@ -13,7 +13,7 @@ const getUser = async (req, res) => {
     })
   } catch (error) {
     res.status(400).json({
-      mensaje: error.message,
+      message: error.message,
       success: false
     })
   }

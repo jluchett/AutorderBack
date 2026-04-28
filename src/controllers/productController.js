@@ -6,12 +6,8 @@ const getProducts = async (req, res) => {
   try {
     const query = 'SELECT * FROM prodserv order by nombre'
     const result = await db.query(query)
-
-    if (result.rows.length === 0) {
-      return res.status(400).json({ message: 'no hay productos registrados' })
-    }
-    const products = result.rows
-    res.status(201).json({
+    const products = result.rows || []
+    res.status(200).json({
       products
     })
   } catch (error) {
