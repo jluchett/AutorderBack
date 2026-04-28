@@ -28,13 +28,16 @@ app.use(cookieParser())
 app.use((req, res, next) => {
   req.session = { user: null }
   const authHeader = req.headers.authorization
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.substring(7, authHeader.length)
+  const token = authHeader && authHeader.startsWith('Bearer ')
+    ? authHeader.substring(7, authHeader.length)
+    : req.cookies?.access_token
+
+  if (token) {
     try {
       const data = jwt.verify(token, process.env.SECRET)
       req.session.user = data
     } catch (err) {
-      logger.warn('Token inválido en header', { message: err.message })
+      logger.warn('Token inválido', { message: err.message })
     }
   }
   next()

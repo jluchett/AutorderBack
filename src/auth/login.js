@@ -15,7 +15,15 @@ const login = async (req, res) => {
       throw new Error('La contraseña no es valida')
     } else {
       if (user.rows[0].locked === true) throw new Error('Usuario bloqueado, solicitar desbloqueo')
-      const token = jwt.sign({ id: user.rows[0].id, name: user.rows[0].name }, process.env.SECRET, { expiresIn: '1h' })
+      const token = jwt.sign(
+        {
+          id: user.rows[0].id,
+          name: user.rows[0].name,
+          role: user.rows[0].role
+        },
+        process.env.SECRET,
+        { expiresIn: '1h' }
+      )
       res
         .cookie('access_token', token, {
           httpOnly: true,
