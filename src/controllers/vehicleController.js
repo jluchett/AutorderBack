@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 // vehicleController.js
 const db = require('../database/db')
+const logger = require('../utils/logger')
 const { validateId, validatePlate, validateName, validateYear, validateMileage } = require('../utils/validators')
 
 const getVehicles = async (req, res) => {
@@ -12,7 +13,7 @@ const getVehicles = async (req, res) => {
       vehicles
     })
   } catch (error) {
-    console.error('Error al obtener Vehiculos', error)
+    logger.error('Error al obtener Vehiculos', { error })
     res.status(500).json({ message: 'Error al obtener Vehiculos' })
   }
 }
@@ -88,7 +89,7 @@ const createVehicle = async (req, res) => {
       message: 'Vehiculo registrado con exito'
     })
   } catch (error) {
-    console.error('Error al ingresar vehiculo', error)
+    logger.error('Error al ingresar vehiculo', { error })
     res.status(500).json({
       message: error.message || 'Error al registrar vehiculo',
       success: false
@@ -157,7 +158,7 @@ const updateVehicle = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.error('Error al actualizar info del vehiculo', error)
+    logger.error('Error al actualizar info del vehiculo', { error })
     res.status(500).json({
       message: error.message || 'Error al actualizar datos del vehiculo',
       success: false
@@ -195,7 +196,7 @@ const deleteVehicle = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.error('Error al eliminar Vehiculo', error)
+    logger.error('Error al eliminar Vehiculo', { error })
     res.status(500).json({
       message: error.message || 'Error al eliminar Vehiculo',
       success: false
@@ -216,7 +217,7 @@ const getVehiclesClient = async (req, res) => {
       vehiclesClient
     })
   } catch (error) {
-    console.error('Error al obtener vehículos del cliente', error)
+    logger.error('Error al obtener vehículos del cliente', { error })
     res.status(500).json({
       message: error.message || 'Error al obtener vehículos del cliente'
     })

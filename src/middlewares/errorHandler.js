@@ -1,8 +1,18 @@
 // errorHandler.js
-// Middleware centralizador de manejo de errores
+const logger = require('../utils/logger')
 
+// Middleware centralizador de manejo de errores
 const errorHandler = (err, req, res, next) => {
-  console.error('Error:', err)
+  logger.error('Error global capturado', {
+    message: err.message,
+    stack: err.stack,
+    path: req.originalUrl,
+    method: req.method,
+    status: err.status || 500,
+    code: err.code || null,
+    userId: req.session?.user?.id || null,
+    body: req.body
+  })
 
   // Error de validación
   if (err.name === 'ValidationError') {

@@ -1,4 +1,5 @@
 const db = require('../../database/db')
+const logger = require('../../utils/logger')
 
 const updateUser = async (req, res) => {
   const { id } = req.params
@@ -17,6 +18,7 @@ const updateUser = async (req, res) => {
 
     const result = await db.query('UPDATE users SET name = $1, role = $2 WHERE id = $3', [updatedName, updatedRole, id])
     if (result.rowCount > 0) {
+      logger.info('Usuario actualizado', { userId: id, name: updatedName, role: updatedRole })
       return res.status(200).json({
         message: 'Datos del usuario actualizados',
         success: true
@@ -28,6 +30,7 @@ const updateUser = async (req, res) => {
       success: false
     })
   } catch (error) {
+    logger.error('Error al actualizar usuario', { error, userId: id, body: req.body })
     res.status(500).json({
       message: error.message,
       success: false

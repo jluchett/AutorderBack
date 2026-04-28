@@ -1,5 +1,6 @@
 // productController.js
 const db = require('../database/db')
+const logger = require('../utils/logger')
 const { validateName, validatePrice } = require('../utils/validators')
 
 const getProducts = async (req, res) => {
@@ -11,7 +12,7 @@ const getProducts = async (req, res) => {
       products
     })
   } catch (error) {
-    console.error('Error al obtener productos', error)
+    logger.error('Error al obtener productos', { error })
     res.status(500).json({ message: 'Error al obtener productos' })
   }
 }
@@ -53,7 +54,7 @@ const createProduct = async (req, res) => {
       message: 'producto agregado con exito'
     })
   } catch (error) {
-    console.error('Error al crear producto', error)
+    logger.error('Error al crear producto', { error })
     res.status(500).json({
       message: error.message || 'Error al crear producto',
       success: false
@@ -95,7 +96,7 @@ const updateProduct = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.error('Error al actualizar producto', error)
+    logger.error('Error al actualizar producto', { error })
     res.status(500).json({
       message: error.message || 'Error al actualizar producto',
       success: false
@@ -133,7 +134,7 @@ const deleteProduct = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.error('Error al eliminar producto', error)
+    logger.error('Error al eliminar producto', { error })
     res.status(500).json({
       message: error.message || 'Error al eliminar producto',
       success: false

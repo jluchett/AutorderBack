@@ -1,4 +1,5 @@
 const db = require('../../database/db')
+const logger = require('../../utils/logger')
 
 const lockUser = async (req, res) => {
   const { id } = req.params
@@ -11,12 +12,14 @@ const lockUser = async (req, res) => {
     if (usuario.rows.length === 0) throw new Error('Usuario con este id no existe')
     const result = await db.query('UPDATE users SET locked = $1 WHERE id = $2', [locked, id])
     if (result.rowCount > 0) {
+      logger.info('Usuario bloqueado/desbloqueado', { userId: id, locked })
       res.status(200).json({
         message: 'Estado del usuario actualizado con éxito',
         success: true
       })
     }
   } catch (error) {
+    logger.error('Error al actualizar estado de usuario', { error, userId: id, locked })
     res.status(500).json({
       message: error.message,
       success: false

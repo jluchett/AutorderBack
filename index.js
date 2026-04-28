@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const db = require('./src/database/db')
 const jwt = require('jsonwebtoken')
 const errorHandler = require('./src/middlewares/errorHandler')
+const logger = require('./src/utils/logger')
 require('dotenv').config()
 
 // Configuración de Express
@@ -33,9 +34,21 @@ app.use((req, res, next) => {
       const data = jwt.verify(token, process.env.SECRET)
       req.session.user = data
     } catch (err) {
-      console.error('Token inválido en header:', err.message)
+      logger.warn('Token inválido en header', { message: err.message })
     }
   }
+  next()
+})
+
+app.use((req, res, next) => {
+  const start = Date.now()
+  res.on('finish', () => {
+    logger.info(`${req.method} ${req.originalUrl} ${res.statusCode} ${Date.now() - start}ms`, {
+      ip: req.ip,
+      userId: req.session?.user?.id || null,
+      userEmail: req.session?.user?.email || null
+    })
+  })
   next()
 })
 
@@ -58,7 +71,7 @@ app.use('/api/orders', orderRouter)
 app.use(errorHandler)
 
 // Puerto de escucha
-const port = 3000
+const port = process.env.PORT || 3000
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Servidor corriendo en el puerto ${port}`)
+  logger.info(`Servidor corriendo en el puerto ${port}`)
 })

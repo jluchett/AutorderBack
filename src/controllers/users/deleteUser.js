@@ -1,4 +1,5 @@
 const db = require('../../database/db')
+const logger = require('../../utils/logger')
 
 const deleteUser = async (req, res) => {
   const { id } = req.params
@@ -31,7 +32,7 @@ const deleteUser = async (req, res) => {
       message: `Usuario ${id} eliminado exitosamente`
     })
   } catch (error) {
-    console.error('Error al eliminar usuario:', error)
+    logger.error('Error al eliminar usuario', { error, userId: id })
     res.status(500).json({
       success: false,
       message: 'Error al eliminar usuario'

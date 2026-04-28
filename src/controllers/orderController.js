@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 // orderController.js
 const db = require('../database/db')
+const logger = require('../utils/logger')
 
 const getOrders = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ const getOrders = async (req, res) => {
       orders
     })
   } catch (error) {
-    console.error('Error al obtener ordenes', error)
+    logger.error('Error al obtener ordenes', { error })
     res.status(500).json({ message: 'Error al obtener ordenes' })
   }
 }
@@ -49,7 +50,7 @@ const createOrder = async (req, res) => {
     })
   } catch (error) {
     await db.query('ROLLBACK') // Revertir la transacción en caso de error
-    console.error('Error al crear orden', error)
+    logger.error('Error al crear orden', { error })
     res.status(500).json({ message: 'Error al crear orden' })
   }
 }
@@ -82,7 +83,7 @@ const deleteOrder = async (req, res) => {
     })
   } catch (error) {
     await db.query('ROLLBACK') // Revertir la transacción en caso de error
-    console.error('Error al eliminar orden', error)
+    logger.error('Error al eliminar orden', { error })
     res.status(500).json({
       message: 'Error al eliminar orden',
       success: false
@@ -123,8 +124,11 @@ const getDetail = async (req, res) => {
       total: result.rows.reduce((sum, item) => sum + parseFloat(item.subtotal || 0), 0)
     })
   } catch (error) {
-    console.error('Error al obtener detalles de orden:', error)
-    console.error('Detalles del error:', error.message, error.code)
+    logger.error('Error al obtener detalles de orden', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    })
     res.status(500).json({
       success: false,
       message: 'Error al obtener detalles de la orden',

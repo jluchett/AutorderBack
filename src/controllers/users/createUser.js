@@ -1,7 +1,10 @@
 const db = require('../../database/db')
 const bcrypt = require('bcrypt')
+const logger = require('../../utils/logger')
 
 const createUser = async (req, res) => {
+  logger.info('Iniciando creación de usuario', { userId: req.body.id })
+
   const { id, name, password, role = 'ventas' } = req.body
   try {
     if (typeof id !== 'string') throw new Error('El Id debe ser una cadena de texto')
@@ -24,6 +27,7 @@ const createUser = async (req, res) => {
       success: true
     })
   } catch (error) {
+    logger.error('Error al crear usuario', { error, requestBody: req.body })
     res.status(400).json({
       message: error.message,
       success: false

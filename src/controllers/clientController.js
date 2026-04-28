@@ -1,5 +1,6 @@
 // clientController.js
 const db = require('../database/db')
+const logger = require('../utils/logger')
 const { validateId, validateName, validatePhone, validateEmail } = require('../utils/validators')
 
 const getClients = async (req, res) => {
@@ -11,7 +12,7 @@ const getClients = async (req, res) => {
       clients
     })
   } catch (error) {
-    console.error('Error al obtener clientes', error)
+    logger.error('Error al obtener clientes', { error })
     res.status(500).json({ message: 'Error al obtener clientes' })
   }
 }
@@ -61,7 +62,7 @@ const createClient = async (req, res) => {
       message: 'Cliente registrado con exito'
     })
   } catch (error) {
-    console.error('Error al crear cliente', error)
+    logger.error('Error al crear cliente', { error })
     // Manejo específico de errores de base de datos
     if (error.code === '23505') { // Unique constraint violation
       return res.status(400).json({
@@ -117,7 +118,7 @@ const updateClient = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.error('Error al actualizar info del cliente', error)
+    logger.error('Error al actualizar info del cliente', { error })
     res.status(500).json({
       message: error.message || 'Error al actualizar info del cliente',
       success: false
@@ -166,7 +167,7 @@ const deleteClient = async (req, res) => {
       success: true
     })
   } catch (error) {
-    console.error('Error al eliminar cliente', error)
+    logger.error('Error al eliminar cliente', { error })
     res.status(500).json({
       message: error.message || 'Error al eliminar cliente',
       success: false

@@ -1,4 +1,5 @@
 const db = require('../../database/db')
+const logger = require('../../utils/logger')
 
 const getUsers = async (req, res) => {
   try {
@@ -8,6 +9,7 @@ const getUsers = async (req, res) => {
       success: true
     })
   } catch (error) {
+    logger.error('Error al obtener usuarios', { error })
     res.status(500).json({
       message: error.message,
       success: false

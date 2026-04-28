@@ -1,4 +1,5 @@
 const db = require('../../database/db')
+const logger = require('../../utils/logger')
 
 const getUser = async (req, res) => {
   const { id } = req.params
@@ -12,6 +13,7 @@ const getUser = async (req, res) => {
       success: true
     })
   } catch (error) {
+    logger.error('Error al obtener usuario', { error, userId: id })
     res.status(400).json({
       message: error.message,
       success: false

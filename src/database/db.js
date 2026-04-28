@@ -1,4 +1,5 @@
 const { Pool } = require('pg')
+const logger = require('../utils/logger')
 require('dotenv').config()
 
 // Configuración de la conexión a la base de datos
@@ -12,7 +13,7 @@ const pool = new Pool({
 
 // Manejo del cierre de la conexión
 pool.on('error', (err) => {
-  console.error('Error en el pool de conexiones:', err)
+  logger.error('Error en el pool de conexiones', { error: err })
   process.exit(-1)
 })
 
@@ -22,15 +23,15 @@ module.exports = {
   connect: () => {
     pool.connect()
       .then(() => {
-        console.log('Conexión exitosa a la base de datos')
+        logger.info('Conexión exitosa a la base de datos')
       })
       .catch((error) => {
-        console.error('Error al conectar a la base de datos', error)
+        logger.error('Error al conectar a la base de datos', { error })
       })
   },
   end: () => {
     pool.end()
-      .then(() => console.log('Conexión a la base de datos cerrada'))
-      .catch((error) => console.error('Error al cerrar la conexión', error))
+      .then(() => logger.info('Conexión a la base de datos cerrada'))
+      .catch((error) => logger.error('Error al cerrar la conexión', { error }))
   }
 }
