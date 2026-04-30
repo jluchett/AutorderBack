@@ -25,23 +25,8 @@ app.use(cors({
 }))
 
 app.use(cookieParser())
-app.use((req, res, next) => {
-  req.session = { user: null }
-  const authHeader = req.headers.authorization
-  const token = authHeader && authHeader.startsWith('Bearer ')
-    ? authHeader.substring(7, authHeader.length)
-    : req.cookies?.access_token
-
-  if (token) {
-    try {
-      const data = jwt.verify(token, process.env.SECRET)
-      req.session.user = data
-    } catch (err) {
-      logger.warn('Token inválido', { message: err.message })
-    }
-  }
-  next()
-})
+const sessionMiddleware = require('./src/middlewares/sessionMiddleware')
+app.use(sessionMiddleware)
 
 app.use((req, res, next) => {
   const start = Date.now()
