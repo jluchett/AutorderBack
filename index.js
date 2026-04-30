@@ -3,8 +3,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
+const sanitizeInput = require('./src/middlewares/sanitizeInput')
 const db = require('./src/database/db')
-const jwt = require('jsonwebtoken')
 const errorHandler = require('./src/middlewares/errorHandler')
 const logger = require('./src/utils/logger')
 require('dotenv').config()
@@ -12,11 +14,28 @@ require('dotenv').config()
 // Configuración de Express
 const app = express()
 
+// Seguridad básica y limitadores
+app.use(helmet())
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      message: 'Demasiadas solicitudes desde esta IP, inténtalo de nuevo más tarde.',
+      success: false
+    }
+  })
+)
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(sanitizeInput())
+
 // Configuración de la conexión a la base de datos
 db.connect()
 // Configuración de middlewares
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3003',
   credentials: true,
