@@ -1,20 +1,14 @@
-const db = require('../../database/db')
 const logger = require('../../utils/logger')
+const userService = require('../../services/userService')
 
 const getUser = async (req, res) => {
   const { id } = req.params
   try {
-    if (typeof id !== 'string') throw new Error('El Id debe ser una cadena de texto')
-    if (id.length > 12) throw new Error('El Id no puede tener mas de 12 caracteres')
-    const usuario = await db.query('SELECT name, role, locked FROM users WHERE id = $1', [id])
-    if (usuario.rows.length === 0) throw new Error('Usuario con este id no existe')
-    res.status(200).json({
-      usuario: usuario.rows,
-      success: true
-    })
+    const usuario = await userService.getUserById(id)
+    res.status(200).json({ usuario, success: true })
   } catch (error) {
     logger.error('Error al obtener usuario', { error, userId: id })
-    res.status(400).json({
+    res.status(error.status || 400).json({
       message: error.message,
       success: false
     })

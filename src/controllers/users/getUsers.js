@@ -1,16 +1,13 @@
-const db = require('../../database/db')
 const logger = require('../../utils/logger')
+const userService = require('../../services/userService')
 
 const getUsers = async (req, res) => {
   try {
-    const users = await db.query('SELECT id, name, role, locked FROM users ORDER BY name')
-    res.status(200).json({
-      users: users.rows || [],
-      success: true
-    })
+    const users = await userService.getUsers()
+    res.status(200).json({ users, success: true })
   } catch (error) {
     logger.error('Error al obtener usuarios', { error })
-    res.status(500).json({
+    res.status(error.status || 500).json({
       message: error.message,
       success: false
     })

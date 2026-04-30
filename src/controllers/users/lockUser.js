@@ -1,26 +1,15 @@
-const db = require('../../database/db')
 const logger = require('../../utils/logger')
+const userService = require('../../services/userService')
 
 const lockUser = async (req, res) => {
   const { id } = req.params
   const { locked } = req.body
   try {
-    if (typeof id !== 'string') throw new Error('El Id debe ser una cadena de texto')
-    if (id.length < 6 || id.length > 12) throw new Error('El Id no puede tener menos de 6 o mas de 12 caracteres')
-    if (typeof locked !== 'boolean') throw new Error('Valor invalido para locked')
-    const usuario = await db.query('SELECT name, role, locked FROM users WHERE id = $1', [id])
-    if (usuario.rows.length === 0) throw new Error('Usuario con este id no existe')
-    const result = await db.query('UPDATE users SET locked = $1 WHERE id = $2', [locked, id])
-    if (result.rowCount > 0) {
-      logger.info('Usuario bloqueado/desbloqueado', { userId: id, locked })
-      res.status(200).json({
-        message: 'Estado del usuario actualizado con éxito',
-        success: true
-      })
-    }
+    const result = await userService.lockUser(id, locked)
+    res.status(200).json({ success: true, ...result })
   } catch (error) {
     logger.error('Error al actualizar estado de usuario', { error, userId: id, locked })
-    res.status(500).json({
+    res.status(error.status || 500).json({
       message: error.message,
       success: false
     })
