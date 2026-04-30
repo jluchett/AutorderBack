@@ -2,8 +2,35 @@ const db = require('../database/db')
 const AppError = require('../utils/AppError')
 const { validateName, validatePrice } = require('../utils/validators')
 
-const getAllProducts = async () => {
-  const result = await db.query('SELECT * FROM prodserv ORDER BY nombre')
+const { buildPagination, addCondition, toSafeNumber } = require('../utils/queryBuilder')
+
+const getAllProducts = async ({ search, nombre, minPrice, maxPrice, page, limit } = {}) => {
+  const conditions = []
+  const values = []
+
+  addCondition(conditions, values, (index) => `nombre ILIKE $${index}`, nombre ? `%${nombre}%` : nombre)
+
+  if (search) {
+    values.push(`%${search}%`)
+    conditions.push(`nombre ILIKE $${values.length}`)
+  }
+
+  const minPriceNum = toSafeNumber(minPrice)
+  const maxPriceNum = toSafeNumber(maxPrice)
+  addCondition(conditions, values, (index) => `precio >= $${index}`, minPriceNum)
+  addCondition(conditions, values, (index) => `precio <= $${index}`, maxPriceNum)
+
+  let query = 'SELECT * FROM prodserv'
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+  query += ' ORDER BY nombre'
+
+  const pagination = buildPagination({ page, limit })
+  query += pagination.clause.replace('$LIMIT', `$${values.length + 1}`).replace('$OFFSET', `$${values.length + 2}`)
+  values.push(...pagination.values)
+
+  const result = await db.query(query, values)
   return result.rows || []
 }
 

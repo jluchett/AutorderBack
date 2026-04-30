@@ -5,7 +5,7 @@ const vehicleService = require('../services/vehicleService')
 
 const getVehicles = async (req, res) => {
   try {
-    const vehicles = await vehicleService.getAllVehicles()
+    const vehicles = await vehicleService.getAllVehicles(req.query)
     res.status(200).json({ vehicles })
   } catch (error) {
     logger.error('Error al obtener Vehiculos', { error })

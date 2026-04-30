@@ -11,5 +11,8 @@ router.get('/', requirePermission('view_orders'), orderController.getOrders)
 router.post('/add', requirePermission('manage_orders'), orderController.createOrder)
 router.delete('/delete/:id', requirePermission('manage_orders'), orderController.deleteOrder)
 router.get('/detail/:id', requirePermission('view_orders'), orderController.getDetail)
+router.get('/stats', requirePermission('view_orders'), orderController.getOrderStats)
+router.get('/reports/top-products', requirePermission('view_orders'), orderController.getTopProductsReport)
+router.get('/reports/top-clients', requirePermission('view_orders'), orderController.getTopClientsReport)
 
 module.exports = router

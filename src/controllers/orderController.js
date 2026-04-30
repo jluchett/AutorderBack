@@ -5,7 +5,7 @@ const orderService = require('../services/orderService')
 
 const getOrders = async (req, res) => {
   try {
-    const orders = await orderService.getAllOrders()
+    const orders = await orderService.getAllOrders(req.query)
     res.status(200).json({ orders })
   } catch (error) {
     logger.error('Error al obtener ordenes', { error })
@@ -55,9 +55,51 @@ const getDetail = async (req, res) => {
   }
 }
 
+const getOrderStats = async (req, res) => {
+  try {
+    const stats = await orderService.getOrderStats(req.query)
+    res.status(200).json({ success: true, stats })
+  } catch (error) {
+    logger.error('Error al obtener estadísticas de órdenes', { error })
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener estadísticas de órdenes',
+      success: false
+    })
+  }
+}
+
+const getTopProductsReport = async (req, res) => {
+  try {
+    const report = await orderService.getTopProductsReport(req.query)
+    res.status(200).json({ success: true, report })
+  } catch (error) {
+    logger.error('Error al obtener reporte de productos', { error })
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener reporte de productos',
+      success: false
+    })
+  }
+}
+
+const getTopClientsReport = async (req, res) => {
+  try {
+    const report = await orderService.getTopClientsReport(req.query)
+    res.status(200).json({ success: true, report })
+  } catch (error) {
+    logger.error('Error al obtener reporte de clientes', { error })
+    res.status(error.status || 500).json({
+      message: error.message || 'Error al obtener reporte de clientes',
+      success: false
+    })
+  }
+}
+
 module.exports = {
   getOrders,
   createOrder,
   deleteOrder,
-  getDetail
+  getDetail,
+  getOrderStats,
+  getTopProductsReport,
+  getTopClientsReport
 }

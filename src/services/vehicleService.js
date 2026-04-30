@@ -2,9 +2,37 @@ const db = require('../database/db')
 const AppError = require('../utils/AppError')
 const { validateId, validatePlate, validateName, validateYear, validateMileage } = require('../utils/validators')
 
-const getAllVehicles = async () => {
-  const query = 'SELECT v.placa, v.marca, v.modelo, v.anio, v.kilometraje, v.motor, v.transmision, v.cliente_id, c.nombre AS nombre_cliente FROM vehiculos v JOIN clientes c ON v.cliente_id = c.id ORDER BY v.placa'
-  const result = await db.query(query)
+const { buildPagination, addCondition, toSafeNumber } = require('../utils/queryBuilder')
+
+const getAllVehicles = async ({ search, placa, marca, modelo, anio, cliente_id, page, limit } = {}) => {
+  const conditions = []
+  const values = []
+
+  addCondition(conditions, values, (index) => `v.placa ILIKE $${index}`, placa ? `%${placa}%` : placa)
+  addCondition(conditions, values, (index) => `v.marca ILIKE $${index}`, marca ? `%${marca}%` : marca)
+  addCondition(conditions, values, (index) => `v.modelo ILIKE $${index}`, modelo ? `%${modelo}%` : modelo)
+
+  const yearNum = toSafeNumber(anio)
+  addCondition(conditions, values, (index) => `v.anio = $${index}`, yearNum)
+  addCondition(conditions, values, (index) => `v.cliente_id = $${index}`, cliente_id)
+
+  if (search) {
+    const searchValue = `%${search}%`
+    values.push(searchValue, searchValue, searchValue, searchValue)
+    conditions.push(`(v.placa ILIKE $${values.length - 3} OR v.marca ILIKE $${values.length - 2} OR v.modelo ILIKE $${values.length - 1} OR v.motor ILIKE $${values.length})`)
+  }
+
+  let query = 'SELECT v.placa, v.marca, v.modelo, v.anio, v.kilometraje, v.motor, v.transmision, v.cliente_id, c.nombre AS nombre_cliente FROM vehiculos v JOIN clientes c ON v.cliente_id = c.id'
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+  query += ' ORDER BY v.placa'
+
+  const pagination = buildPagination({ page, limit })
+  query += pagination.clause.replace('$LIMIT', `$${values.length + 1}`).replace('$OFFSET', `$${values.length + 2}`)
+  values.push(...pagination.values)
+
+  const result = await db.query(query, values)
   return result.rows || []
 }
 

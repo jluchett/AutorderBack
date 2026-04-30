@@ -2,9 +2,46 @@ const db = require('../database/db')
 const AppError = require('../utils/AppError')
 const { validateId, validatePlate } = require('../utils/validators')
 
-const getAllOrders = async () => {
-  const query = "SELECT o.id AS orden_id, TO_CHAR(o.fecha, 'YYYY-MM-DD') AS fecha_orden, c.id AS id_cliente, c.nombre AS nombre_cliente, c.telefono AS telefono_cliente, v.placa AS placa_vehi, o.total FROM ordenes o JOIN clientes c ON o.cliente_id = c.id JOIN vehiculos v ON o.vehiculo_placa = v.placa ORDER BY o.fecha DESC"
-  const result = await db.query(query)
+const { buildPagination, addCondition, toSafeNumber } = require('../utils/queryBuilder')
+
+const getAllOrders = async ({ search, clienteId, placaVehic, startDate, endDate, minTotal, maxTotal, page, limit } = {}) => {
+  const conditions = []
+  const values = []
+
+  addCondition(conditions, values, (index) => `c.id = $${index}`, clienteId)
+  addCondition(conditions, values, (index) => `v.placa = $${index}`, placaVehic)
+
+  if (startDate) {
+    values.push(startDate)
+    conditions.push(`o.fecha >= $${values.length}`)
+  }
+  if (endDate) {
+    values.push(endDate)
+    conditions.push(`o.fecha <= $${values.length}`)
+  }
+
+  const minTotalNum = toSafeNumber(minTotal)
+  const maxTotalNum = toSafeNumber(maxTotal)
+  addCondition(conditions, values, (index) => `o.total >= $${index}`, minTotalNum)
+  addCondition(conditions, values, (index) => `o.total <= $${index}`, maxTotalNum)
+
+  if (search) {
+    const searchValue = `%${search}%`
+    values.push(searchValue, searchValue, searchValue)
+    conditions.push(`(o.id::text ILIKE $${values.length - 2} OR c.nombre ILIKE $${values.length - 1} OR v.placa ILIKE $${values.length})`)
+  }
+
+  let query = "SELECT o.id AS orden_id, TO_CHAR(o.fecha, 'YYYY-MM-DD') AS fecha_orden, c.id AS id_cliente, c.nombre AS nombre_cliente, c.telefono AS telefono_cliente, v.placa AS placa_vehi, o.total FROM ordenes o JOIN clientes c ON o.cliente_id = c.id JOIN vehiculos v ON o.vehiculo_placa = v.placa"
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+  query += ' ORDER BY o.fecha DESC'
+
+  const pagination = buildPagination({ page, limit })
+  query += pagination.clause.replace('$LIMIT', `$${values.length + 1}`).replace('$OFFSET', `$${values.length + 2}`)
+  values.push(...pagination.values)
+
+  const result = await db.query(query, values)
   return result.rows || []
 }
 
@@ -97,9 +134,109 @@ const getOrderDetail = async (id) => {
   return { detalle, total }
 }
 
+const getOrderStats = async ({ startDate, endDate } = {}) => {
+  const conditions = []
+  const values = []
+
+  if (startDate) {
+    values.push(startDate)
+    conditions.push(`o.fecha >= $${values.length}`)
+  }
+  if (endDate) {
+    values.push(endDate)
+    conditions.push(`o.fecha <= $${values.length}`)
+  }
+
+  let query = 'SELECT COUNT(*) AS total_orders, COALESCE(SUM(o.total), 0) AS total_revenue, COALESCE(AVG(o.total), 0) AS average_order_value, COALESCE(MAX(o.total), 0) AS max_order_value, COALESCE(MIN(o.total), 0) AS min_order_value FROM ordenes o'
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+
+  const result = await db.query(query, values)
+  return result.rows[0] || {
+    total_orders: 0,
+    total_revenue: 0,
+    average_order_value: 0,
+    max_order_value: 0,
+    min_order_value: 0
+  }
+}
+
+const getTopProductsReport = async ({ startDate, endDate, limit = 10 } = {}) => {
+  const conditions = []
+  const values = []
+
+  if (startDate) {
+    values.push(startDate)
+    conditions.push(`o.fecha >= $${values.length}`)
+  }
+  if (endDate) {
+    values.push(endDate)
+    conditions.push(`o.fecha <= $${values.length}`)
+  }
+
+  let query = `
+    SELECT 
+      p.id AS producto_id,
+      p.nombre AS producto_nombre,
+      SUM(d.cantidad) AS total_quantity,
+      SUM(d.cantidad * d.precio_unitario) AS total_revenue
+    FROM detalle_ordenes d
+    JOIN prodserv p ON d.producto_id = p.id
+    JOIN ordenes o ON d.orden_id = o.id
+  `
+
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+
+  query += ' GROUP BY p.id, p.nombre ORDER BY total_quantity DESC LIMIT $' + (values.length + 1)
+  values.push(Number(limit) || 10)
+
+  const result = await db.query(query, values)
+  return result.rows || []
+}
+
+const getTopClientsReport = async ({ startDate, endDate, limit = 10 } = {}) => {
+  const conditions = []
+  const values = []
+
+  if (startDate) {
+    values.push(startDate)
+    conditions.push(`o.fecha >= $${values.length}`)
+  }
+  if (endDate) {
+    values.push(endDate)
+    conditions.push(`o.fecha <= $${values.length}`)
+  }
+
+  let query = `
+    SELECT
+      c.id AS cliente_id,
+      c.nombre AS cliente_nombre,
+      COUNT(o.id) AS order_count,
+      SUM(o.total) AS total_revenue
+    FROM ordenes o
+    JOIN clientes c ON o.cliente_id = c.id
+  `
+
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+
+  query += ' GROUP BY c.id, c.nombre ORDER BY total_revenue DESC LIMIT $' + (values.length + 1)
+  values.push(Number(limit) || 10)
+
+  const result = await db.query(query, values)
+  return result.rows || []
+}
+
 module.exports = {
   getAllOrders,
   createOrder,
   deleteOrder,
-  getOrderDetail
+  getOrderDetail,
+  getOrderStats,
+  getTopProductsReport,
+  getTopClientsReport
 }

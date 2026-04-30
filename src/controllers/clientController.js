@@ -4,7 +4,7 @@ const clientService = require('../services/clientService')
 
 const getClients = async (req, res) => {
   try {
-    const clients = await clientService.getAllClients()
+    const clients = await clientService.getAllClients(req.query)
     res.status(200).json({ clients })
   } catch (error) {
     logger.error('Error al obtener clientes', { error })

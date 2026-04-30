@@ -2,8 +2,34 @@ const db = require('../database/db')
 const AppError = require('../utils/AppError')
 const { validateId, validateName, validatePhone, validateEmail } = require('../utils/validators')
 
-const getAllClients = async () => {
-  const result = await db.query('SELECT * FROM clientes ORDER BY id')
+const { buildPagination, addCondition } = require('../utils/queryBuilder')
+
+const getAllClients = async ({ search, id, nombre, telefono, email, page, limit } = {}) => {
+  const conditions = []
+  const values = []
+
+  addCondition(conditions, values, (index) => `id = $${index}`, id)
+  addCondition(conditions, values, (index) => `nombre ILIKE $${index}`, nombre ? `%${nombre}%` : nombre)
+  addCondition(conditions, values, (index) => `telefono = $${index}`, telefono)
+  addCondition(conditions, values, (index) => `email ILIKE $${index}`, email ? `%${email}%` : email)
+
+  if (search) {
+    const searchValue = `%${search}%`
+    values.push(searchValue, searchValue, searchValue, searchValue)
+    conditions.push(`(id ILIKE $${values.length - 3} OR nombre ILIKE $${values.length - 2} OR telefono ILIKE $${values.length - 1} OR email ILIKE $${values.length})`)
+  }
+
+  let query = 'SELECT * FROM clientes'
+  if (conditions.length > 0) {
+    query += ` WHERE ${conditions.join(' AND ')}`
+  }
+  query += ' ORDER BY id'
+
+  const pagination = buildPagination({ page, limit })
+  query += pagination.clause.replace('$LIMIT', `$${values.length + 1}`).replace('$OFFSET', `$${values.length + 2}`)
+  values.push(...pagination.values)
+
+  const result = await db.query(query, values)
   return result.rows || []
 }
 
