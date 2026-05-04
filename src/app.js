@@ -18,15 +18,12 @@ app.use(
     standardHeaders: true,
     legacyHeaders: false,
     message: {
-      message: 'Demasiadas solicitudes desde esta IP, inténtalo de nuevo más tarde.',
+      message: 'Demasiadas solicitudes, inténtalo de nuevo más tarde.',
       success: false
     }
   })
 )
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-app.use(sanitizeInput())
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3003',
@@ -35,7 +32,15 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization']
   })
 )
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(sanitizeInput())
+
 app.use(cookieParser())
+
+const sessionMiddleware = require('./middlewares/sessionMiddleware')
+app.use(sessionMiddleware)
 
 const userRouter = require('./routes/userRoutes')
 const authRouter = require('./routes/authRoutes')

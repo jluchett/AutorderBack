@@ -30,6 +30,8 @@ const getAllClients = async ({ search, id, nombre, telefono, email, page, limit 
   values.push(...pagination.values)
 
   const result = await db.query(query, values)
+
+  console.log(`Clientes encontrados: ${result.rows.length}`)
   return result.rows || []
 }
 
@@ -53,6 +55,8 @@ const createClient = async ({ id, nombre, telefono, email }) => {
 
   const insertQuery = 'INSERT INTO clientes (id, nombre, telefono, email) VALUES ($1, $2, $3, $4)'
   await db.query(insertQuery, [id, nombre, telefono, email || null])
+
+  console.log(`Cliente con ID ${id} creado`)
   return { message: 'Cliente registrado con exito' }
 }
 
@@ -93,6 +97,7 @@ const updateClient = async (id, payload) => {
     throw new AppError('Cliente no encontrado', 404)
   }
 
+  console.log(`Cliente con ID ${id} actualizado`)
   return { message: 'Datos del cliente actualizados' }
 }
 
@@ -116,6 +121,7 @@ const deleteClient = async (id) => {
     throw new AppError('Cliente no encontrado', 404)
   }
 
+  console.log(`Cliente con ID ${id} eliminado`)
   return { message: 'Cliente eliminado con exito' }
 }
 
