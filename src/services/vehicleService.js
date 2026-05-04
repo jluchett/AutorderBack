@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const db = require('../database/db')
 const AppError = require('../utils/AppError')
 const { validateId, validatePlate, validateName, validateYear, validateMileage } = require('../utils/validators')
@@ -19,7 +20,7 @@ const getAllVehicles = async ({ search, placa, marca, modelo, anio, cliente_id, 
   if (search) {
     const searchValue = `%${search}%`
     values.push(searchValue, searchValue, searchValue, searchValue)
-    conditions.push(`(v.placa ILIKE $${values.length - 3} OR v.marca ILIKE $${values.length - 2} OR v.modelo ILIKE $${values.length - 1} OR v.motor ILIKE $${values.length})`)
+    conditions.push(`(v.placa ILIKE $${values.length - 3} OR v.marca ILIKE $${values.length - 2} OR v.modelo ILIKE $${values.length - 1} OR v.motor::text ILIKE $${values.length})`)
   }
 
   let query = 'SELECT v.placa, v.marca, v.modelo, v.anio, v.kilometraje, v.motor, v.transmision, v.cliente_id, c.nombre AS nombre_cliente FROM vehiculos v JOIN clientes c ON v.cliente_id = c.id'

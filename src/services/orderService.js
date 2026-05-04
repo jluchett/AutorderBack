@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const db = require('../database/db')
 const AppError = require('../utils/AppError')
 const { validateId, validatePlate } = require('../utils/validators')
