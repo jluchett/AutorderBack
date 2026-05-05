@@ -248,5 +248,3 @@ POST /api/orders/add
 ---
 
 **¡El proyecto está listo para usar!** 🚀
-
-Para más detalles, consulta `README_COMPLETO.md`

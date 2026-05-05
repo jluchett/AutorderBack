@@ -1,5 +1,27 @@
 node_modules
 .env
 .vscode
+./src/logs
 src/logs
 *.log
+Logs
+logs
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist
+build
+coverage
+.DS_Store
+.idea
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Ignore all files in the public directory except for index.html
+/public/*
+!/public/index.html

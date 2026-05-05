@@ -64,3 +64,17 @@
 2026-05-04T15:27:57.326Z [info] Conexión exitosa a la base de datos
 2026-05-04T15:32:06.153Z [info] Servidor corriendo en el puerto 3000
 2026-05-04T15:32:06.187Z [info] Conexión exitosa a la base de datos
+2026-05-04T15:48:02.570Z [info] Servidor corriendo en el puerto 3000
+2026-05-04T15:48:02.716Z [info] Conexión exitosa a la base de datos
+2026-05-04T15:48:05.336Z [info] Servidor corriendo en el puerto 3000
+2026-05-04T15:48:05.370Z [info] Conexión exitosa a la base de datos
+2026-05-04T15:48:23.325Z [info] Servidor corriendo en el puerto 3000
+2026-05-04T15:48:23.357Z [info] Conexión exitosa a la base de datos
+2026-05-04T15:58:37.878Z [error] Error al eliminar producto {"error":{"status":400,"code":null}}
+2026-05-04T15:59:42.353Z [error] Error al eliminar producto {"error":{"status":400,"code":null}}
+2026-05-04T18:46:08.559Z [info] Iniciando creación de usuario {"userId":"72271166"}
+2026-05-05T13:41:18.305Z [info] Servidor corriendo en el puerto 3000
+2026-05-05T13:41:18.363Z [info] Conexión exitosa a la base de datos
+2026-05-05T14:21:53.762Z [info] Servidor corriendo en el puerto 3000
+2026-05-05T14:21:53.795Z [info] Conexión exitosa a la base de datos
+2026-05-05T14:27:59.738Z [error] Error al crear cliente {"error":{"status":400,"code":null}}

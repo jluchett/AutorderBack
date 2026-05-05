@@ -12,7 +12,7 @@ const login = async (req, res) => {
     if (user.rowCount === 0) throw new Error('El usuario no existe')
     const isPassValid = await bcrypt.compare(password, user.rows[0].password)
     if (!isPassValid) {
-      throw new Error('La contraseña no es valida')
+      throw new Error('Datos de autenticación inválidos')
     } else {
       if (user.rows[0].locked === true) throw new Error('Usuario bloqueado, solicitar desbloqueo')
       const token = jwt.sign(
@@ -48,7 +48,7 @@ const login = async (req, res) => {
     // Errores de autenticación (credenciales inválidas)
     const authErrors = [
       'El usuario no existe',
-      'La contraseña no es valida',
+      'Datos de autenticación inválidos',
       'Usuario bloqueado, solicitar desbloqueo'
     ]
 

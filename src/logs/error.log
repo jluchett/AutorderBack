@@ -1,2 +1,5 @@
 2026-05-04T14:56:53.251Z [error] Error al obtener Vehiculos {"error":{"length":228,"name":"error","severity":"ERROR","code":"42883","hint":"Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.","position":"256","file":"parse_oper.c","line":"656","routine":"op_error"}}
 2026-05-04T15:16:18.684Z [error] Error al obtener Vehiculos {"error":{"length":228,"name":"error","severity":"ERROR","code":"42883","hint":"Ningún operador coincide en el nombre y tipos de argumentos. Puede ser necesario agregar conversión explícita de tipos.","position":"256","file":"parse_oper.c","line":"656","routine":"op_error"}}
+2026-05-04T15:58:37.878Z [error] Error al eliminar producto {"error":{"status":400,"code":null}}
+2026-05-04T15:59:42.353Z [error] Error al eliminar producto {"error":{"status":400,"code":null}}
+2026-05-05T14:27:59.738Z [error] Error al crear cliente {"error":{"status":400,"code":null}}
