@@ -1,7 +1,7 @@
 const db = require('../database/db')
 const bcrypt = require('bcrypt')
 const AppError = require('../utils/AppError')
-const { validateId, validateName, validatePassword } = require('../utils/validators')
+const { validateId, validatePassword } = require('../utils/validators')
 const { ROLE_PERMISSIONS } = require('../utils/permissions')
 
 const createUser = async ({ id, name, password, role = 'ventas' }) => {

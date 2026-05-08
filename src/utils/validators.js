@@ -69,6 +69,12 @@ const validateMileage = (mileage) => {
   return true
 }
 
+const validateProductType = (type) => {
+  const validTypes = ['PRODUCTO', 'SERVICIO']
+  if (!validTypes.includes(type)) throw new Error(`El tipo debe ser uno de: ${validTypes.join(', ')}`)
+  return true
+}
+
 module.exports = {
   validateEmail,
   validatePhone,
@@ -79,5 +85,6 @@ module.exports = {
   validateQuantity,
   validatePlate,
   validateYear,
-  validateMileage
+  validateMileage,
+  validateProductType
 }
